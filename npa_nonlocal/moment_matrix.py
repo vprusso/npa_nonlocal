@@ -36,7 +36,7 @@ def simplify_matrix_entry(entry):
     else:
         args = entry.args
         
-        #print "Original Entry:", entry        
+        print "Original Entry:", entry        
 
         # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
         args = list(args)
@@ -59,11 +59,9 @@ def simplify_matrix_entry(entry):
                 args[i] = args[i].base
         args = tuple(args)
 
-            
-        entry = reduce(lambda x,y : x*y, args)       
-    
-        #print "Simplified Entry:", entry
-    
+        entry = reduce(lambda x,y : x*y, args)           
+        print "Simplified Entry:", entry, list(entry.args)       
+                    
     return entry
 
 
@@ -196,16 +194,16 @@ def generate_sequence(meas_ops, level):
     return seq
 
     
-ops = generate_measurement_operators(2,2,True)
+ops = generate_measurement_operators(3,2,True)
 print ops
 
-seq = generate_sequence(ops, "1+AB")
+seq = generate_sequence(ops, "1")
 print seq
 print len(seq)
 n = len(seq)
 
-mat = generate_moment_matrix(seq)
-content = generate_latex_matrix(mat)
+#mat = generate_moment_matrix(seq)
+#content = generate_latex_matrix(mat)
 #write_file("TEST","tex",content)
 
 

@@ -19,9 +19,9 @@
 
 from moment_matrix import *
 
-def bell_operator(bell_exp, moment_matrix):
+def bell_operator_matrix(bell_expr, moment_matrix):
     '''
-    Given a Bell expression (bell_exp) and a moment matrix, (moment_matrix) 
+    Given a Bell expression (bell_expr) and a moment matrix, (moment_matrix) 
     this function returns a matrix where the entries corresponding to the Bell
     expression are weighted in the positions in the moment matrix.
     '''
