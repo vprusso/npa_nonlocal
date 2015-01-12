@@ -22,13 +22,23 @@ from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
 from sympy.matrices import zeros
 
 
-def simplify_sequence(mat):
+def simplify_sequence(seq):
     '''
     Since the measurement operators pair-wise commute, i.e. [A_a^x, B_b^y] = 0, 
     and since they are also projection operators, i.e. P^2 = P, we can possibly
     reduce the number of terms in certain entries in the moment matrix.
     '''
-    pass
+    print seq
+
+    # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
+    ## TODO
+
+    # Measurement operators are projective, so enforce that P^2 = P for any 
+    # collection of measurement operators in sequence.
+    ## TODO
+   
+    
+    return seq
 
 
 def generate_moment_matrix(seq):
@@ -42,16 +52,15 @@ def generate_moment_matrix(seq):
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            seq[i] = simplify_sequence(seq[i])
-            seq[j] = simplify_sequence(seq[j])
-            
-            M[i,j] = Dagger(seq[i]) * seq[j]
+            simp_seq = simplify_sequence( Dagger(seq[i]) * seq[j] )
+                        
+            M[i,j] = simp_seq
     return M
 
 
 def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
     '''
-    Measurement operators for Alice and Bob. The 
+    Measurement operators for Alice and Bob.
     '''    
     meas_ops = []    
     
@@ -158,16 +167,28 @@ def generate_sequence(meas_ops, level):
     I = IdentityOperator()
     seq[0:0] = [I]
     
-    #print seq
-    #print len(seq)
     return seq
-    #print sorted(seq, key=default_sort_key)
 
 ops = generate_measurement_operators(2,2)
 #print ops
 
-seq = generate_sequence(ops, 1)
+seq = generate_sequence(ops, "1+AB")
 print seq
 print len(seq)
+n = len(seq)
+M = zeros(n,n)
+for i in range(n):
+    for j in range(n):            
+        entry = Dagger(seq[i]) * seq[j]
+        entry_2 = sorted(entry.args, key=default_sort_key)
+        print "1:",entry
+        print "2:",entry_2
+        M[i,j] = Dagger(seq[i]) * seq[j]
+        
+print M[1,1]
+        #simp_seq = simplify_sequence( Dagger(seq[i]) * seq[j] )
+                        
+        #M[i,j] = simp_seq
+
 #mat = generate_moment_matrix(seq)
 #print mat
