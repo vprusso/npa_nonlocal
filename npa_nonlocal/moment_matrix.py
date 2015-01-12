@@ -22,6 +22,7 @@ from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
 from sympy.core.numbers import Infinity
 from sympy.matrices import zeros
 
+from npa_io import *
 
 def simplify_matrix_entry(entry):
     '''
@@ -39,22 +40,23 @@ def simplify_matrix_entry(entry):
 
         # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
         args = list(args)
-        for k in range(len(args)-1):
-            if str(args[k])[0] > str(args[k+1])[0]:
-                tmp = args[k]
-                args[k] = args[k+1]
-                args[k+1] = tmp                   
+        for i in range(len(args)-1):
+            # Comparing A vs. B lexographically to determine commutation swap
+            if str(args[i])[0] > str(args[i+1])[0]:
+                tmp = args[i]
+                args[i] = args[i+1]
+                args[i+1] = tmp                   
 
-        # Perform mult again        
+        # Multiply through arguments after altering the position by commutation
         entry = reduce(lambda x,y : x*y, args)       
         args = entry.args
 
         # Measurement operators are projective, so enforce that P^2 = P for any 
         # collection of measurement operators in sequence.
         args = list(args)
-        for k in range(len(args)):
-            if isinstance(args[k], Pow):
-                args[k] = args[k].base
+        for i in range(len(args)):
+            if isinstance(args[i], Pow):
+                args[i] = args[i].base
         args = tuple(args)
 
             
@@ -84,7 +86,7 @@ def generate_moment_matrix(seq):
 
 def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
     '''
-    Measurement operators for Alice and Bob.
+    Measurement operators for Alice and Bob. 
     '''    
     meas_ops = []    
     
@@ -194,49 +196,17 @@ def generate_sequence(meas_ops, level):
     return seq
 
     
-ops = generate_measurement_operators(2,2,False)
-#print ops
+ops = generate_measurement_operators(2,2,True)
+print ops
 
 seq = generate_sequence(ops, "1+AB")
 print seq
 print len(seq)
 n = len(seq)
-#M = zeros(n,n)
-#for i in range(0,2):
-#    for j in range(0,2): 
-#
-#        entry = Dagger(seq[i]) * seq[j]
-#        if isinstance(entry, IdentityOperator):
-#            pass
-#        else:
-#            args = entry.args
-#            
-#            print "Original Entry:", entry        
-#    
-#            # Do commutation thing
-#            args = list(args)
-#            
-#            for k in range(len(args)-1):
-#                if str(args[k])[0] > str(args[k+1])[0]:
-#                    tmp = args[k]
-#                    args[k] = args[k+1]
-#                    args[k+1] = tmp                   
-#
-#            # Perform mult again        
-#            entry = reduce(lambda x,y : x*y, args)       
-#            args = entry.args
-#
-#            # Enforce projective measurement constraint, i.e. P^2 = P
-#            args = list(args)
-#            for k in range(len(args)):
-#                if isinstance(args[k], Pow):
-#                    args[k] = args[k].base
-#            args = tuple(args)
-#
-#                
-#            entry = reduce(lambda x,y : x*y, args)       
-#        
-#            print "Simplified Entry:", entry
 
 mat = generate_moment_matrix(seq)
-#print mat
+content = generate_latex_matrix(mat)
+#write_file("TEST","tex",content)
+
+
+

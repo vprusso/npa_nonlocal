@@ -18,6 +18,8 @@
 
 import unittest
 from moment_matrix import *
+from bell_violation import *
+
 
 ###############################################################################
 ##  MOMENT_MATRIX.PY UNIT TESTS
@@ -107,12 +109,25 @@ class TestMomentMatrixFunctions(unittest.TestCase):
 
         self.assertEqual(len(seq_ops_input_8_output_8_level_1), \
                          self.seq_len_input_8_output_8_level_1)                          
-        
+
+
+###############################################################################
+##  BELL_VIOLATION.PY UNIT TESTS
+###############################################################################
+
+class TestBellViolationFunctions(unittest.TestCase):
+    def setUp(self):
+        pass
+    
 ################################################################################
 ## MAIN UNIT TEST DRIVER
 ################################################################################
 if __name__ == '__main__':
 
-    # run unit tests for util.py
+    # run unit tests for moment_matrix.py
     moment_matrix_suite = unittest.TestLoader().loadTestsFromTestCase(TestMomentMatrixFunctions)
     unittest.TextTestRunner(verbosity=2).run(moment_matrix_suite)
+
+    # run unit tests for bell_violation.py
+    bell_violation_suite = unittest.TestLoader().loadTestsFromTestCase(TestBellViolationFunctions)
+    unittest.TextTestRunner(verbosity=2).run(bell_violation_suite)

@@ -16,8 +16,9 @@
 #------------------------------------------------------------------------------
 '''
 
+from sympy import *
 import math
-from moment_matrix import *
+
 
 ###############################################################################
 #   Prompt functions
@@ -32,7 +33,7 @@ def disp_prompt():
 ###############################################################################
 def write_file(file_name, file_ext, content):
     print ("Writing file %s.%s...") % (file_name, file_ext)
-    with open(file_name+"."+file_ext, 'a') as out_file:
+    with open(file_name+"."+file_ext, 'w') as out_file:
         out_file.write(content)
     print ("Done.")
 
@@ -77,18 +78,18 @@ def generate_latex_matrix(mat, block_mat_format=False):
     \\pagematrix{
     """
 
+    dim = int(math.sqrt(len(mat))) 
     if block_mat_format == True:
         block_sz = str("c"*dim)    
         start_mat_tag = "\\left(\\begin{array}{" + block_sz + "|" + block_sz + "} \n" 
-        end_mat_tag = "\n \\end{array} }"
+        end_mat_tag = "\n \\end{array} \\right) }"
 
     else:
-        start_mat_tag = "\\begin{pmatrix} \n"
-        end_mat_tag = "\n \\end{pmatrix} }"
+        start_mat_tag = "\\left(\\begin{array}{" + "c"*dim + "}\n"
+        end_mat_tag = "\n \\end{array} \\right) }"
     
     mat = MutableDenseMatrix(mat)
-    dim = int(math.sqrt(len(mat)))    
-    
+           
     # Write the actual matrix in LaTeX format
     output = start_mat_tag
     for i in range(dim):
@@ -101,10 +102,13 @@ def generate_latex_matrix(mat, block_mat_format=False):
                 delim = " \\\ "
             else:
                 delim = " & "
-            output += str(mat[i,j]) + delim
+            entry = (str(mat[i,j]).replace("*"," ")).replace("I", " \\I ")
+            output += entry + delim
     output += end_mat_tag
 
-    tex_src += output        
+    tex_src += output + "\n"     
+    tex_src += "\\end{document}"
+    
     return tex_src
     
 
@@ -116,5 +120,3 @@ def generate_latex_matrix(mat, block_mat_format=False):
 #mat = generate_moment_matrix(seq)
 #print generate_latex_matrix(mat)
 
-
-#print mat
