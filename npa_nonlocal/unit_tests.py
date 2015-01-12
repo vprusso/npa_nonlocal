@@ -46,7 +46,7 @@ class TestMomentMatrixFunctions(unittest.TestCase):
         self.seq_len_input_7_output_7_level_1_AB = 169
         self.seq_len_input_8_output_8_level_1_AB = 225       
 
-        # Refer to "Matrix Size" column in Table-2
+        # Refer to "Matrix Size" column in Table-2 in [1]
         self.seq_len_input_3_output_2_level_1 = 7
         self.seq_len_input_3_output_2_level_1_AB = 16
         self.seq_len_input_3_output_2_level_1_A_AB = 22

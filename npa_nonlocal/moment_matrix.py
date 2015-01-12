@@ -19,26 +19,50 @@
 
 from sympy import *
 from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
+from sympy.core.numbers import Infinity
 from sympy.matrices import zeros
 
 
-def simplify_sequence(seq):
+def simplify_matrix_entry(entry):
     '''
     Since the measurement operators pair-wise commute, i.e. [A_a^x, B_b^y] = 0, 
     and since they are also projection operators, i.e. P^2 = P, we can possibly
     reduce the number of terms in certain entries in the moment matrix.
     '''
-    print seq
+           
+    if isinstance(entry, IdentityOperator):
+        pass
+    else:
+        args = entry.args
+        
+        #print "Original Entry:", entry        
 
-    # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
-    ## TODO
+        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
+        args = list(args)
+        for k in range(len(args)-1):
+            if str(args[k])[0] > str(args[k+1])[0]:
+                tmp = args[k]
+                args[k] = args[k+1]
+                args[k+1] = tmp                   
 
-    # Measurement operators are projective, so enforce that P^2 = P for any 
-    # collection of measurement operators in sequence.
-    ## TODO
-   
+        # Perform mult again        
+        entry = reduce(lambda x,y : x*y, args)       
+        args = entry.args
+
+        # Measurement operators are projective, so enforce that P^2 = P for any 
+        # collection of measurement operators in sequence.
+        args = list(args)
+        for k in range(len(args)):
+            if isinstance(args[k], Pow):
+                args[k] = args[k].base
+        args = tuple(args)
+
+            
+        entry = reduce(lambda x,y : x*y, args)       
     
-    return seq
+        #print "Simplified Entry:", entry
+    
+    return entry
 
 
 def generate_moment_matrix(seq):
@@ -52,7 +76,7 @@ def generate_moment_matrix(seq):
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            simp_seq = simplify_sequence( Dagger(seq[i]) * seq[j] )
+            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )
                         
             M[i,j] = simp_seq
     return M
@@ -169,26 +193,50 @@ def generate_sequence(meas_ops, level):
     
     return seq
 
-ops = generate_measurement_operators(2,2)
+    
+ops = generate_measurement_operators(2,2,False)
 #print ops
 
 seq = generate_sequence(ops, "1+AB")
 print seq
 print len(seq)
 n = len(seq)
-M = zeros(n,n)
-for i in range(n):
-    for j in range(n):            
-        entry = Dagger(seq[i]) * seq[j]
-        entry_2 = sorted(entry.args, key=default_sort_key)
-        print "1:",entry
-        print "2:",entry_2
-        M[i,j] = Dagger(seq[i]) * seq[j]
-        
-print M[1,1]
-        #simp_seq = simplify_sequence( Dagger(seq[i]) * seq[j] )
-                        
-        #M[i,j] = simp_seq
+#M = zeros(n,n)
+#for i in range(0,2):
+#    for j in range(0,2): 
+#
+#        entry = Dagger(seq[i]) * seq[j]
+#        if isinstance(entry, IdentityOperator):
+#            pass
+#        else:
+#            args = entry.args
+#            
+#            print "Original Entry:", entry        
+#    
+#            # Do commutation thing
+#            args = list(args)
+#            
+#            for k in range(len(args)-1):
+#                if str(args[k])[0] > str(args[k+1])[0]:
+#                    tmp = args[k]
+#                    args[k] = args[k+1]
+#                    args[k+1] = tmp                   
+#
+#            # Perform mult again        
+#            entry = reduce(lambda x,y : x*y, args)       
+#            args = entry.args
+#
+#            # Enforce projective measurement constraint, i.e. P^2 = P
+#            args = list(args)
+#            for k in range(len(args)):
+#                if isinstance(args[k], Pow):
+#                    args[k] = args[k].base
+#            args = tuple(args)
+#
+#                
+#            entry = reduce(lambda x,y : x*y, args)       
+#        
+#            print "Simplified Entry:", entry
 
-#mat = generate_moment_matrix(seq)
+mat = generate_moment_matrix(seq)
 #print mat
