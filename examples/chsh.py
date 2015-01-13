@@ -15,3 +15,17 @@
 # Licence:     GNU
 #------------------------------------------------------------------------------
 '''
+
+# TODO:
+
+ops = generate_measurement_operators(2,2)
+seq = generate_sequence(ops, "1")
+M = generate_moment_matrix(seq)
+
+A00 = ops[1]; A10 = ops[2]
+B00 = ops[3]; B10 = ops[4]
+n = len(seq)
+
+chsh_exp = A00*B00 + A10*B00 + A00*B10 - A10*B10
+
+bell_mat = bell_operator_matrix(chsh_exp, M)
