@@ -32,8 +32,13 @@ def disp_prompt():
 #   File I/O functions
 ###############################################################################
 def write_file(file_name, file_ext, content):
-    print ("Writing file %s.%s...") % (file_name, file_ext)
-    with open(file_name+"."+file_ext, 'w') as out_file:
+    '''
+    Write file of specified extension in local directory. 
+    '''
+    if "." not in file_ext:
+        file_ext = "." + file_ext
+    print ("Writing file %s%s...") % (file_name, file_ext)
+    with open(file_name+file_ext, 'w') as out_file:
         out_file.write(content)
     print ("Done.")
 

@@ -34,33 +34,39 @@ def simplify_matrix_entry(entry):
     if isinstance(entry, IdentityOperator):
         pass
     else:
-        args = entry.args
-        
-        print "Original Entry:", entry        
-
-        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all A_a^x and B_b^y
-        args = list(args)
-        for i in range(len(args)-1):
+        print "Original Entry:", entry               
+                        
+        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all operators 
+        # A_a^x and B_b^y
+        args = list(entry.args)
+        for k in range(len(args)-1):
             # Comparing A vs. B lexographically to determine commutation swap
-            if str(args[i])[0] > str(args[i+1])[0]:
-                tmp = args[i]
-                args[i] = args[i+1]
-                args[i+1] = tmp                   
+            if str(args[k])[0] > str(args[k+1])[0]:
+                tmp = args[k]
+                args[k] = args[k+1]
+                args[k+1] = tmp
+        args = Mul(tuple(args))
+        entry = args
+            
+        entry = reduce(lambda x,y : x*y, args)   
+                        
+         # Measurement operators are projective, so enforce that P^2 = P for 
+         # any collection of measurement operators in sequence.
+        args = list(entry.args)
+        new_args = []
+        for k in range(len(args)):               
+            if isinstance(args[k], Integer):
+                pass
+            elif isinstance(args[k], Pow):
+                new_args.append(args[k].base)
+            else:
+               new_args.append(args[k])                    
+        new_args = Mul(tuple(new_args))
+        entry = new_args            
 
-        # Multiply through arguments after altering the position by commutation
-        entry = reduce(lambda x,y : x*y, args)       
-        args = entry.args
-
-        # Measurement operators are projective, so enforce that P^2 = P for any 
-        # collection of measurement operators in sequence.
-        args = list(args)
-        for i in range(len(args)):
-            if isinstance(args[i], Pow):
-                args[i] = args[i].base
-        args = tuple(args)
-
-        entry = reduce(lambda x,y : x*y, args)           
-        print "Simplified Entry:", entry, list(entry.args)       
+        entry = reduce(lambda x,y : x*y, new_args)   
+                        
+        print "Simplified Entry:", entry     
                     
     return entry
 
@@ -76,19 +82,18 @@ def generate_moment_matrix(seq):
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )
-                        
+            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
             M[i,j] = simp_seq
     return M
 
 
 def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
     '''
-    Measurement operators for Alice and Bob. 
+    Measurement operators for Alice and Bob.  
     '''    
     meas_ops = []    
     
-    # 
+    # Longer 
     if short_meas == False:
         for i in range(num_inputs):
             for j in range(num_outputs):
@@ -194,17 +199,65 @@ def generate_sequence(meas_ops, level):
     return seq
 
     
-ops = generate_measurement_operators(3,2,True)
-print ops
+ops = generate_measurement_operators(2,2,True)
+#print ops
 
-seq = generate_sequence(ops, "1")
-print seq
-print len(seq)
+seq = generate_sequence(ops, "1+AB")
+#print seq
+#print len(seq)
 n = len(seq)
 
-#mat = generate_moment_matrix(seq)
-#content = generate_latex_matrix(mat)
-#write_file("TEST","tex",content)
+mat = generate_moment_matrix(seq)
+
+content = generate_latex_matrix(mat)
+write_file("TEST","tex",content)
 
 
-
+## DEBUG
+#n = len(seq)
+#M = zeros(n,n)
+#for i in range(0,5):
+#    for j in range(0,5):            
+#for i in range(n):
+#    for j in range(n):
+#        entry = Dagger(seq[i]) * seq[j] 
+#                    
+#        if isinstance(entry, IdentityOperator):
+#            pass
+#        else:
+#
+#            print "Original Entry:", entry               
+#                        
+#        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all operators 
+#        # A_a^x and B_b^y
+#            args = list(entry.args)
+#            for k in range(len(args)-1):
+#                # Comparing A vs. B lexographically to determine commutation swap
+#                if str(args[k])[0] > str(args[k+1])[0]:
+#                    tmp = args[k]
+#                    args[k] = args[k+1]
+#                    args[k+1] = tmp
+#            args = Mul(tuple(args))
+#            entry = args
+#            
+#            entry = reduce(lambda x,y : x*y, args)   
+#                        
+#
+#         #Measurement operators are projective, so enforce that P^2 = P for any 
+#         #collection of measurement operators in sequence.
+#            args = list(entry.args)
+#            new_args = []
+#            for k in range(len(args)):               
+#                if isinstance(args[k], Integer):
+#                    pass
+#                elif isinstance(args[k], Pow):
+#                    new_args.append(args[k].base)
+#                else:
+#                    new_args.append(args[k])                    
+#            new_args = Mul(tuple(new_args))
+#            entry = new_args            
+#
+#            entry = reduce(lambda x,y : x*y, new_args)   
+#                        
+#            print "Simplified Entry:", entry
+#            #M[i,j] = entry
