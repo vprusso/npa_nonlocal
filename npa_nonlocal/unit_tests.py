@@ -162,12 +162,24 @@ class TestMomentMatrixFunctions(unittest.TestCase):
         
         self.assertEqual(len(self.seq_ops_input_3_output_2_level_1_A_AB), \
                          self.seq_len_input_3_output_2_level_1_A_AB)
+                         
+        def test_moment_matrix_entries(self):
+            pass
 
 ###############################################################################
 ##  BELL_VIOLATION.PY UNIT TESTS
 ###############################################################################
 
 class TestBellViolationFunctions(unittest.TestCase):
+    def setUp(self):
+        pass
+    
+
+###############################################################################
+##  NPA_IO.PY UNIT TESTS
+###############################################################################
+
+class TestNPAIOFunctions(unittest.TestCase):
     def setUp(self):
         pass
     

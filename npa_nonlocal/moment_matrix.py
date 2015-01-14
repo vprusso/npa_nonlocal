@@ -24,64 +24,21 @@ from sympy.matrices import zeros
 
 from npa_io import *
 
-def simplify_matrix_entry(entry):
-    '''
-    Since the measurement operators pair-wise commute, i.e. [A_a^x, B_b^y] = 0, 
-    and since they are also projection operators, i.e. P^2 = P, we can possibly
-    reduce the number of terms in certain entries in the moment matrix.
-    '''
-           
-    if isinstance(entry, IdentityOperator):
-        pass
-    else:
-                            
-        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all operators 
-        # A_a^x and B_b^y
-        args = list(entry.args)
-        for k in range(len(args)-1):
-            # Comparing A vs. B lexographically to determine commutation swap
-            if str(args[k])[0] > str(args[k+1])[0]:
-                tmp = args[k]
-                args[k] = args[k+1]
-                args[k+1] = tmp
-        args = Mul(tuple(args))
-                   
-        entry = reduce(lambda x,y : x*y, args)   
-                        
-        # Measurement operators are projective, so enforce that P^2 = P for 
-        # any collection of measurement operators in sequence.
-        args = list(entry.args)
-        new_args = []
-        for k in range(len(args)):               
-            if isinstance(args[k], Integer):
-                pass
-            # Remove identities since they are simply absorbed by the term.
-            elif isinstance(args[k], IdentityOperator):
-                pass 
-            elif isinstance(args[k], Pow):
-                new_args.append(args[k].base)
-            else:
-             new_args.append(args[k])                    
-        new_args = Mul(tuple(new_args))
-                  
-        entry = reduce(lambda x,y : x*y, new_args)   
-                                            
-    return entry
-
 
 def generate_moment_matrix(seq):
     '''
     Given a sequence of level l (denoted S^l), the n x n moment matrix 
     corresponding to S^l may be written in the form:
-                M^l(i,j) = <psi| ( S^l(i) )^* ( S^l(j)) ) |psi>
-    for all i,j <= n
+                M^l(u,v) = <psi| U^* V |psi>
+    for any entry
     '''    
     n = len(seq)
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
-            M[i,j] = simp_seq
+            #simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
+            #M[i,j] = simp_seq
+            M[i,j] = Dagger(seq[i]) * seq[j]
     return M
 
 
@@ -137,7 +94,7 @@ def generate_sequence(meas_ops, level):
         "l+A", "l+B", "l+AB", "l+A+B", "l+AB+A", etc.
     are all appropriate intermediate levels. 
     '''    
-    seq = meas_ops
+    seq = meas_ops[:]
     inter_med_seq = False
     
     # If the level is not an integer, but instead an intermediate level value, 
@@ -193,7 +150,70 @@ def generate_sequence(meas_ops, level):
                     seq.append( seq[j] * seq[k+(n/2)] )
 
     # Add in Identity operator to the front of the sequence
-    I = IdentityOperator()
+    #I = IdentityOperator()
+    I = HermitianOperator("I")
     seq[0:0] = [I]
     
     return seq
+    
+    
+def check_moment_matrix_entry_equiv(entry_1, entry_2):
+    '''
+    Given two entries in the moment matrix, this function checks whether or not
+    they are within the same equivalence class by performing various checks 
+    based on the properties of the projective measurement operators. 
+    '''
+    pass
+
+
+def generate_equivalence_table(mat):
+    '''
+    Given a moment matrix, this function returns a table of all respective
+    equivalent entries in the matrix.
+    '''
+    pass
+
+
+def simplify_matrix_entry(entry):
+    '''
+    Since the measurement operators pair-wise commute, i.e. [A_a^x, B_b^y] = 0, 
+    and since they are also projection operators, i.e. P^2 = P, we can possibly
+    reduce the number of terms in certain entries in the moment matrix.
+    '''
+           
+    if isinstance(entry, IdentityOperator):
+        pass
+    else:
+                            
+        # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all operators 
+        # A_a^x and B_b^y
+        args = list(entry.args)
+        for k in range(len(args)-1):
+            # Comparing A vs. B lexographically to determine commutation swap
+            if str(args[k])[0] > str(args[k+1])[0]:
+                tmp = args[k]
+                args[k] = args[k+1]
+                args[k+1] = tmp
+        args = Mul(tuple(args))
+                   
+        entry = reduce(lambda x,y : x*y, args)   
+                        
+        # Measurement operators are projective, so enforce that P^2 = P for 
+        # any collection of measurement operators in sequence.
+        args = list(entry.args)
+        new_args = []
+        for k in range(len(args)):               
+            if isinstance(args[k], Integer):
+                pass
+            # Remove identities since they are simply absorbed by the term.
+            elif isinstance(args[k], IdentityOperator):
+                pass 
+            elif isinstance(args[k], Pow):
+                new_args.append(args[k].base)
+            else:
+             new_args.append(args[k])                    
+        new_args = Mul(tuple(new_args))
+                  
+        entry = reduce(lambda x,y : x*y, new_args)   
+                                            
+    return entry
