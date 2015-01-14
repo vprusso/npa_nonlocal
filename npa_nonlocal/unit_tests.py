@@ -52,64 +52,116 @@ class TestMomentMatrixFunctions(unittest.TestCase):
         self.seq_len_input_3_output_2_level_1 = 7
         self.seq_len_input_3_output_2_level_1_AB = 16
         self.seq_len_input_3_output_2_level_1_A_AB = 22
+        
+        # Generate measurement operators of specified input / output length
+        self.meas_ops_input_2_output_2 = generate_measurement_operators(2,2)
+        self.meas_ops_input_3_output_3 = generate_measurement_operators(3,3)
+        self.meas_ops_input_4_output_4 = generate_measurement_operators(4,4)
+        self.meas_ops_input_5_output_5 = generate_measurement_operators(5,5)
+        self.meas_ops_input_6_output_6 = generate_measurement_operators(6,6)
+        self.meas_ops_input_7_output_7 = generate_measurement_operators(7,7)
+        self.meas_ops_input_8_output_8 = generate_measurement_operators(8,8)
+        
+        self.meas_ops_input_3_output_2 = generate_measurement_operators(3,2)
+    
+        # Check that despite level input, permutations of order do not matter.
+        self.level_1 = 1
+        self.level_1_AB = "1+AB"
+        self.level_1_A_AB = "1+A+AB"
+        self.level_1_A_B_AB = "1+A+B+AB"
+        self.level_1_B_A_AB = "1+B+A+AB"
+        self.level_1_AB_A_B = "1+AB_A_B"
+        self.level_1_AB_B_A = "1+AB_B_A"
+        
+        # Generate sequence operators of specified input / output level 1:
+        self.seq_ops_input_2_output_2_level_1 = \
+            generate_sequence(self.meas_ops_input_2_output_2, self.level_1)
+        self.seq_ops_input_3_output_3_level_1 = \
+            generate_sequence(self.meas_ops_input_3_output_3, self.level_1)
+        self.seq_ops_input_4_output_4_level_1 = \
+            generate_sequence(self.meas_ops_input_4_output_4, self.level_1)            
+        self.seq_ops_input_5_output_5_level_1 = \
+            generate_sequence(self.meas_ops_input_5_output_5, self.level_1)        
+        self.seq_ops_input_6_output_6_level_1 = \
+            generate_sequence(self.meas_ops_input_6_output_6, self.level_1)            
+        self.seq_ops_input_7_output_7_level_1 = \
+            generate_sequence(self.meas_ops_input_7_output_7, self.level_1)            
+        self.seq_ops_input_8_output_8_level_1 = \
+            generate_sequence(self.meas_ops_input_8_output_8, self.level_1)
 
+        # Generate sequence operators of specified input / output level 1+AB:
+        self.seq_ops_input_2_output_2_level_1_AB = \
+            generate_sequence(self.meas_ops_input_2_output_2, self.level_1_AB)
+        self.seq_ops_input_3_output_3_level_1_AB = \
+            generate_sequence(self.meas_ops_input_3_output_3, self.level_1_AB)
+        self.seq_ops_input_4_output_4_level_1_AB = \
+            generate_sequence(self.meas_ops_input_4_output_4, self.level_1_AB)            
+        self.seq_ops_input_5_output_5_level_1_AB = \
+            generate_sequence(self.meas_ops_input_5_output_5, self.level_1_AB)        
+        self.seq_ops_input_6_output_6_level_1_AB = \
+            generate_sequence(self.meas_ops_input_6_output_6, self.level_1_AB)            
+        self.seq_ops_input_7_output_7_level_1_AB = \
+            generate_sequence(self.meas_ops_input_7_output_7, self.level_1_AB)            
+        self.seq_ops_input_8_output_8_level_1_AB = \
+            generate_sequence(self.meas_ops_input_8_output_8, self.level_1_AB)
+            
+        # Generate sequence operators of 3 input / 2 output level 1, 1+AB, and
+        # level 1+A+AB
+        self.seq_ops_input_3_output_2_level_1 = \
+            generate_sequence(self.meas_ops_input_3_output_2, self.level_1)
+        self.seq_ops_input_3_output_2_level_1_AB = \
+            generate_sequence(self.meas_ops_input_3_output_2, self.level_1_AB)
+        self.seq_ops_input_3_output_2_level_1_A_AB = \
+            generate_sequence(self.meas_ops_input_3_output_2, self.level_1_A_AB)
+        
         
     def test_generate_sequence(self):
         '''
         Tests for generate_sequence function in moment_matrix.py
-        '''
-        meas_ops_input_2_output_2 = generate_measurement_operators(2,2)
-        meas_ops_input_3_output_3 = generate_measurement_operators(3,3)
-        meas_ops_input_4_output_4 = generate_measurement_operators(4,4)
-        meas_ops_input_5_output_5 = generate_measurement_operators(5,5)
-        meas_ops_input_6_output_6 = generate_measurement_operators(6,6)
-        meas_ops_input_7_output_7 = generate_measurement_operators(7,7)
-        meas_ops_input_8_output_8 = generate_measurement_operators(8,8)
-        
-        seq_ops_input_2_output_2_level_1 = \
-            generate_sequence(meas_ops_input_2_output_2, 1)
-
-        seq_ops_input_3_output_3_level_1 = \
-            generate_sequence(meas_ops_input_3_output_3, 1)
-
-        seq_ops_input_4_output_4_level_1 = \
-            generate_sequence(meas_ops_input_4_output_4, 1)
- 
-        seq_ops_input_5_output_5_level_1 = \
-            generate_sequence(meas_ops_input_5_output_5, 1)
-            
-        seq_ops_input_6_output_6_level_1 = \
-            generate_sequence(meas_ops_input_6_output_6, 1)
-            
-        seq_ops_input_7_output_7_level_1 = \
-            generate_sequence(meas_ops_input_7_output_7, 1)
-
-        seq_ops_input_8_output_8_level_1 = \
-            generate_sequence(meas_ops_input_8_output_8, 1)
-                     
+        '''                             
         # Ensure the length of the sequence generated agrees with the results
-        # of the length in reference [1]. 
-        self.assertEqual(len(seq_ops_input_2_output_2_level_1), \
-                         self.seq_len_input_2_output_2_level_1) 
-                         
-        self.assertEqual(len(seq_ops_input_3_output_3_level_1), \
+        # of the length in Table-1 under I_1 in reference [1]. 
+        self.assertEqual(len(self.seq_ops_input_2_output_2_level_1), \
+                         self.seq_len_input_2_output_2_level_1)                        
+        self.assertEqual(len(self.seq_ops_input_3_output_3_level_1), \
                          self.seq_len_input_3_output_3_level_1)  
-
-        self.assertEqual(len(seq_ops_input_4_output_4_level_1), \
+        self.assertEqual(len(self.seq_ops_input_4_output_4_level_1), \
                          self.seq_len_input_4_output_4_level_1)  
-
-        self.assertEqual(len(seq_ops_input_5_output_5_level_1), \
+        self.assertEqual(len(self.seq_ops_input_5_output_5_level_1), \
                          self.seq_len_input_5_output_5_level_1)  
-
-        self.assertEqual(len(seq_ops_input_6_output_6_level_1), \
+        self.assertEqual(len(self.seq_ops_input_6_output_6_level_1), \
                          self.seq_len_input_6_output_6_level_1)  
-
-        self.assertEqual(len(seq_ops_input_7_output_7_level_1), \
+        self.assertEqual(len(self.seq_ops_input_7_output_7_level_1), \
                          self.seq_len_input_7_output_7_level_1)  
-
-        self.assertEqual(len(seq_ops_input_8_output_8_level_1), \
-                         self.seq_len_input_8_output_8_level_1)                          
-
+        self.assertEqual(len(self.seq_ops_input_8_output_8_level_1), \
+                         self.seq_len_input_8_output_8_level_1)    
+                         
+        # Ensure the length of the sequence generated agrees with the results
+        # of the length in Table-1 under I_1+AB in reference [1].
+        self.assertEqual(len(self.seq_ops_input_2_output_2_level_1_AB), \
+                         self.seq_len_input_2_output_2_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_3_output_3_level_1_AB), \
+                         self.seq_len_input_3_output_3_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_4_output_4_level_1_AB), \
+                         self.seq_len_input_4_output_4_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_5_output_5_level_1_AB), \
+                         self.seq_len_input_5_output_5_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_6_output_6_level_1_AB), \
+                         self.seq_len_input_6_output_6_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_7_output_7_level_1_AB), \
+                         self.seq_len_input_7_output_7_level_1_AB) 
+        self.assertEqual(len(self.seq_ops_input_8_output_8_level_1_AB), \
+                         self.seq_len_input_8_output_8_level_1_AB) 
+                         
+        # Ensure the length of the sequence generated agrees with the results
+        # of the length in Table-2 in reference [1]
+        self.assertEqual(len(self.seq_ops_input_3_output_2_level_1), \
+                         self.seq_len_input_3_output_2_level_1)
+        self.assertEqual(len(self.seq_ops_input_3_output_2_level_1_AB), \
+                         self.seq_len_input_3_output_2_level_1_AB)
+        
+        self.assertEqual(len(self.seq_ops_input_3_output_2_level_1_A_AB), \
+                         self.seq_len_input_3_output_2_level_1_A_AB)
 
 ###############################################################################
 ##  BELL_VIOLATION.PY UNIT TESTS
