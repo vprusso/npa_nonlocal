@@ -16,7 +16,6 @@
 #------------------------------------------------------------------------------
 '''
 
-
 from moment_matrix import *
 from npa_io import *
 
@@ -42,20 +41,21 @@ def bell_operator_matrix(bell_exp, moment_matrix):
         coeffs = []
     
         for j in range(len(factors)):
-            #
+            # Factors will have a NegativeOne instance if term is negative
             if isinstance(factors[j], NegativeOne):
                 negate = True        
-            #
+            # Any scalars are represented as Integers
             elif isinstance(factors[j], Integer):
                 if negate == True:
                     coeffs.append(-factors[j])
                 else:
                     coeffs.append(factors[j])
-            #
+            # The remaining terms are Hermitian Operators (meas. ops.)
             elif isinstance(factors[j], HermitianOperator):
                 terms.append(factors[j])    
         
-        #        
+        # If a term doesn't have a scalar, we put a "1" to denote its scalar is
+        # just a factor of 1.
         if len(coeffs) == 0:
             coeffs.append(1)
             if negate == True:
@@ -65,6 +65,8 @@ def bell_operator_matrix(bell_exp, moment_matrix):
         bell_terms.append(terms)
         bell_coeffs.append(coeffs)
     
+    # Go through matrix and properly weight entries with the coefficients
+    # derived from the Bell expression.
     bell_mat = zeros(n,n)
     for i in range(n):
         for j in range(n):
@@ -72,27 +74,19 @@ def bell_operator_matrix(bell_exp, moment_matrix):
                 print M[i,j], i,j
 
 
-#ops = generate_measurement_operators(3,2,False)
-#seq = generate_sequence(ops, "1")
-#
-#A00 = ops[1]; A01 = ops[2]; A10 = ops[3]; 
-#A11 = ops[4]; A20 = ops[5]; A21 = ops[6]
-#
-#B00 = ops[7]; B01 = ops[8]; B10 = ops[9];
-#B11 = ops[10]; B20 = ops[11]; B21 = ops[12]
 
 ops = generate_measurement_operators(2,2)
 seq = generate_sequence(ops, "1")
 M = generate_moment_matrix(seq)
 
-A00 = ops[1]; A10 = ops[2]
-B00 = ops[3]; B10 = ops[4]
-n = len(seq)
-
-chsh_exp = A00*B00 + A10*B00 + A00*B10 - A10*B10
-
-bell_mat = bell_operator_matrix(chsh_exp, M)
-
+#A00 = ops[1]; A10 = ops[2]
+#B00 = ops[3]; B10 = ops[4]
+#n = len(seq)
+#
+#chsh_exp = A00*B00 + A10*B00 + A00*B10 - A10*B10 - A00 - B00
+#
+##bell_mat = bell_operator_matrix(chsh_exp, M)
+#
 #chsh_args = list(chsh_exp.args)
 #
 #chsh_terms = []
@@ -135,8 +129,11 @@ bell_mat = bell_operator_matrix(chsh_exp, M)
 #
 #for i in range(n):
 #    for j in range(n):
+##        print type(M[i,j]),i,j
 #        if M[i,j] in chsh_terms and i != j:
 #            print M[i,j], i,j
+#            
+            
 #pprint(M)
 #content = generate_latex_matrix(M)
 #write_file("TEST",".tex",content)

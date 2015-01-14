@@ -19,6 +19,7 @@
 import math
 
 from sympy import *
+from sympy import pprint
 
 
 ###############################################################################
@@ -27,6 +28,11 @@ from sympy import *
 def disp_prompt():
     '''
     '''
+    # TODO:
+    #   Enter numeber of inputs / outputs 
+    #   Option to:
+    #       Output moment matrix
+    #       Run SDP
     pass
 
 ###############################################################################
@@ -60,11 +66,20 @@ def generate_latex_matrix(mat, block_mat_format=False):
     \\usepackage{etoolbox}
     \\usepackage{calc}
     \\usepackage{mathpazo}
+    \\usepackage{amsmath}
 
     \\def\I{\\mathbb{1}}
 
     \\newlength{\\myx}
     \\newlength{\\myy}
+
+    \\newcommand{\\microspace}{\\mspace{0.5mu}}
+
+    \\newcommand{\\ket}[1]{
+        \\lvert\\microspace #1 \\microspace \\rangle}
+
+    \\newcommand{\\bra}[1]{
+        \\langle\\microspace #1 \\microspace \\rvert}   
 
     \\newcommand{\\resizetopage}[1]{%
     \\settowidth{\\myx}{#1}%
@@ -109,7 +124,7 @@ def generate_latex_matrix(mat, block_mat_format=False):
             else:
                 delim = " & "
             entry = (str(mat[i,j]).replace("*"," ")).replace("I", " \\I ")
-            output += entry + delim
+            output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
     output += end_mat_tag
 
     tex_src += output + "\n"     

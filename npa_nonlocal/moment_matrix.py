@@ -45,12 +45,11 @@ def simplify_matrix_entry(entry):
                 args[k] = args[k+1]
                 args[k+1] = tmp
         args = Mul(tuple(args))
-        entry = args
-            
+                   
         entry = reduce(lambda x,y : x*y, args)   
                         
-         # Measurement operators are projective, so enforce that P^2 = P for 
-         # any collection of measurement operators in sequence.
+        # Measurement operators are projective, so enforce that P^2 = P for 
+        # any collection of measurement operators in sequence.
         args = list(entry.args)
         new_args = []
         for k in range(len(args)):               
@@ -62,12 +61,11 @@ def simplify_matrix_entry(entry):
             elif isinstance(args[k], Pow):
                 new_args.append(args[k].base)
             else:
-               new_args.append(args[k])                    
+             new_args.append(args[k])                    
         new_args = Mul(tuple(new_args))
-        entry = new_args            
-
+                  
         entry = reduce(lambda x,y : x*y, new_args)   
-                                                
+                                            
     return entry
 
 
@@ -118,9 +116,11 @@ def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
 
             alice_meas_op = HermitianOperator(alice_label)
             alice_meas_op.is_commutative = False
+            #alice_meas_op.is_real = True
 
             bob_meas_op = HermitianOperator(bob_label)
             bob_meas_op.is_commutative = False            
+            #bob_meas_op.is_real = True
             
             meas_ops.append(HermitianOperator(alice_meas_op))
             meas_ops.append(HermitianOperator(bob_meas_op))
