@@ -25,4 +25,4 @@ def list_2_str(_list):
     '''
     Converts a list of objects into a concatenation of strings
     '''
-    return ''.join(map(str, _list))
+    return ' '.join(map(str, _list))

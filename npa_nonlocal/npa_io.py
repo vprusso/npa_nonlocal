@@ -21,6 +21,8 @@ import math
 from sympy import *
 from sympy import pprint
 
+from util import *
+
 
 ###############################################################################
 #   Prompt functions
@@ -124,7 +126,15 @@ def generate_latex_matrix(mat, block_mat_format=False):
             else:
                 delim = " & "
             entry = (str(mat[i,j]).replace("*"," ")).replace("I", " \\I ")
-            output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
+            s = entry.split()
+            for k in range(len(s)):
+                if "^" in s[k]:
+                    s[k] = s[k].replace("^","^{").replace("_","}_{")
+                    s[k] = s[k] + "} "
+            entry = list_2_str(s)
+            
+            #output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
+            output += entry + delim
     output += end_mat_tag
 
     tex_src += output + "\n"     
