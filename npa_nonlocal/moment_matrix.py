@@ -23,6 +23,7 @@ from sympy.core.numbers import Infinity, Integer, NegativeOne
 from sympy.matrices import zeros
 
 from npa_io import *
+from util import *
 
 
 def generate_moment_matrix(seq):
@@ -42,18 +43,30 @@ def generate_moment_matrix(seq):
     return M
 
 
-def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
+def generate_measurement_operators(num_inputs, num_outputs, \
+                                   short_meas=True, parallel_reps=1):
     '''
-    Measurement operators for Alice and Bob.  
+    Measurement operators for Alice and Bob.
+
+        short_meas: One can reduce the number of entries in the measurement
+        operators by noting that they sum to the identity. For larger
+        computations, this form is ideal, however for other cases, one may
+        wish to generate the most general list of measurements.
+
+        parallel_reps: Number of repetitions carried out by party.         
     '''    
     meas_ops = []    
+
+    # Assuming that measurement labels are {0,1}-valued.
+    meas_labels = generate_bit_strings(parallel_reps)    
+    num_meas = len(meas_labels)    
     
-    # Longer 
+    # Longer form of measurements are generated.
     if short_meas == False:
-        for i in range(num_inputs):
-            for j in range(num_outputs):
-                alice_label = "A^" + str(i) + "_" + str(j)
-                bob_label = "B^" + str(i) + "_" + str(j)
+        for i in range(num_meas):
+            for j in range(num_meas):
+                alice_label = "A^" + meas_labels[i] + "_" + meas_labels[j]
+                bob_label = "B^" + meas_labels[i] + "_" + meas_labels[j]
 
                 alice_meas_op = HermitianOperator(alice_label)
                 alice_meas_op.is_commutative = False
@@ -64,7 +77,7 @@ def generate_measurement_operators(num_inputs, num_outputs, short_meas=True):
                 meas_ops.append(HermitianOperator(alice_meas_op))
                 meas_ops.append(HermitianOperator(bob_meas_op))
 
-    #
+    # Shorter form of measurements are generated
     if short_meas == True:
         for i in range(num_inputs-1 + num_outputs-1):
 
