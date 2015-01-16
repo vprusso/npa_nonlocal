@@ -184,7 +184,12 @@ def generate_equivalence_table(mat):
     Given a moment matrix, this function returns a table of all respective
     equivalent entries in the matrix.
     '''
-    pass
+    n = int(math.sqrt(len(mat))) 
+    
+    # Go through each entry in the moment matrix and compare against every
+    # other entry. Store the result in a dictionary. 
+    # TODO
+    
 
 
 def simplify_matrix_entry(entry):

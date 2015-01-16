@@ -27,10 +27,12 @@ def bell_operator_matrix(bell_exp, moment_matrix):
     this function returns a matrix where the entries corresponding to the Bell
     expression are weighted in the positions in the moment matrix.
     '''
-    bell_args = list(bell_exp.args)
+    
+    n = int(math.sqrt(len(moment_matrix)))
 
     bell_terms = []
     bell_coeffs = []
+    bell_args = list(bell_exp.args)
     for i in range(len(bell_args)):
         
         # Split Bell expression up into factors
@@ -70,14 +72,14 @@ def bell_operator_matrix(bell_exp, moment_matrix):
     bell_mat = zeros(n,n)
     for i in range(n):
         for j in range(n):
-            if M[i,j] in bell_terms and i != j:
-                print M[i,j], i,j
+            if moment_matrix[i,j] in bell_terms and i != j:
+                print moment_matrix[i,j], i,j
 
 
 
-ops = generate_measurement_operators(2,2)
-seq = generate_sequence(ops, "1")
-M = generate_moment_matrix(seq)
+#ops = generate_measurement_operators(2,2)
+#seq = generate_sequence(ops, "1+AB")
+#M = generate_moment_matrix(seq)
 
 #A00 = ops[1]; A10 = ops[2]
 #B00 = ops[3]; B10 = ops[4]
