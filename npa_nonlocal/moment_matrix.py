@@ -176,7 +176,16 @@ def check_moment_matrix_entry_equiv(entry_1, entry_2):
     they are within the same equivalence class by performing various checks 
     based on the properties of the projective measurement operators. 
     '''
-    pass
+
+    # Check if entry_1 and entry_2 are equivalent via commutation relations    
+    
+    # First just check if the entries are mirrored:
+    if str(entry_1) == str(entry_2):
+        return True
+    elif:
+        pass
+    else:
+        return False
 
 
 def generate_equivalence_table(mat):
@@ -189,7 +198,7 @@ def generate_equivalence_table(mat):
     # Go through each entry in the moment matrix and compare against every
     # other entry. Store the result in a dictionary. 
     # TODO
-    
+        
 
 
 def simplify_matrix_entry(entry):
