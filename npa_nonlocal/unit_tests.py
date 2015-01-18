@@ -113,6 +113,14 @@ class TestMomentMatrixFunctions(unittest.TestCase):
             generate_sequence(self.meas_ops_input_3_output_2, self.level_1_AB)
         self.seq_ops_input_3_output_2_level_1_A_AB = \
             generate_sequence(self.meas_ops_input_3_output_2, self.level_1_A_AB)
+            
+        # Generate moment matrices of various input / output / level
+        self.moment_matrix_input_2_output_2_level_1 = \
+            generate_moment_matrix(self.seq_ops_input_2_output_2_level_1)  
+            
+        # Moment matrix dimensions variables
+        self.moment_matrix_dim_input_2_output_2_level_1 = \
+            int(math.sqrt(len(self.moment_matrix_input_2_output_2_level_1))) 
         
         
     def test_generate_sequence(self):
@@ -163,8 +171,29 @@ class TestMomentMatrixFunctions(unittest.TestCase):
         self.assertEqual(len(self.seq_ops_input_3_output_2_level_1_A_AB), \
                          self.seq_len_input_3_output_2_level_1_A_AB)
                          
-        def test_moment_matrix_entries(self):
-            pass
+        def test_check_moment_matrix_entry_equiv(self):
+            '''
+            Tests for check_moment_matrix_entry_equiv function in 
+            moment_matrix.py
+            '''
+            # For 2 inputs and 2 outputs at level 1, expected that 
+            # M[i,j] = M[j,i] for all i,j
+            for i in range(self.moment_matrix_dim_input_2_output_2_level_1):
+                for j in range(self.moment_matrix_dim_input_2_output_2_level_1):
+                    assertTrue(check_moment_matrix_entry_equiv(\
+                        self.moment_matrix_input_2_output_2_level_1[i,j]),\
+                        self.moment_matrix_dim_input_2_output_2_level_1[j,i] )
+
+            # For 2 input and 2 outputs at level 1 expected that 
+            # M[i,i] = M[1,i] and M[i,i] = M[i,1] for all i.
+            for i in range(self.moment_matrix_dim_input_2_output_2_level_1):
+                for j in range(self.moment_matrix_dim_input_2_output_2_level_1):
+                    assertTrue(check_moment_matrix_entry_equiv(\
+                        self.moment_matrix_input_2_output_2_level_1[i,i]),\
+                        self.moment_matrix_dim_input_2_output_2_level_1[1,i] )
+                    assertTrue(check_moment_matrix_entry_equiv(\
+                        self.moment_matrix_input_2_output_2_level_1[i,i]),\
+                        self.moment_matrix_dim_input_2_output_2_level_1[i,1] )
 
 ###############################################################################
 ##  BELL_VIOLATION.PY UNIT TESTS

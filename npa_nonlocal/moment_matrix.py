@@ -26,20 +26,27 @@ from npa_io import *
 from util import *
 
 
-def generate_moment_matrix(seq):
+def generate_moment_matrix(seq, simplified=True):
     '''
     Given a sequence of level l (denoted S^l), the n x n moment matrix 
     corresponding to S^l may be written in the form:
                 M^l(u,v) = <psi| U^* V |psi>
-    for any entry
+    for any entry. User can set the "simplified" variable to False if the 
+    moment matrix is not intended to be fully simplified by the rules of 
+    commutation, projection, etc.
     '''    
     n = len(seq)
     M = zeros(n,n)
     for i in range(n):
-        for j in range(n):            
-            simp_seq = simplify_moment_matrix_entry( Dagger(seq[i]) * seq[j] )                 
-            M[i,j] = simp_seq
-            #M[i,j] = Dagger(seq[i]) * seq[j]
+        for j in range(n):      
+            entry = Dagger(seq[i]) * seq[j]
+            
+            if simplified == True:
+                simp_entry = simplify_moment_matrix_entry( entry )                 
+                M[i,j] = simp_entry
+                
+            else:
+                M[i,j] = entry                
     return M
 
 
@@ -218,21 +225,44 @@ def check_moment_matrix_entry_equiv(entry_1, entry_2):
         return False
 
 
-def generate_moment_matrix_equivalence_dict(mat):
+def generate_moment_matrix_equivalence_dict(mat, minimal=False):
     '''
     Given a moment matrix, this function returns a dictionary of all respective
-    equivalent entries in the matrix. Note, depending on the size of the 
-    moment matrix, this may take a while. 
+    equivalent entries in the matrix. If the "minimal" value is True, the 
+    function only stores entries in the dictionary that have not been seen
+    previously.
     '''
-    n = int(math.sqrt(len(mat))) 
-    
-    # Go through each entry in the moment matrix and compare against every
-    # other entry. Store the result in a dictionary. 
+    n = int(math.sqrt(len(mat)))  
     equiv_dict = {}
+
+    # Go through each entry in the moment matrix and compare against every
+    # other entry. Store the result in a dictionary.     
+    if minimal == False:
+        for i in range(n):
+            for j in range(n):
+                equiv_dict[(i,j)] = \
+                    find_all_equiv_moment_matrix_entries(mat[i,j], mat)   
+                    
+    # Otherwise generate a minimal list of entries that have no repeats in the
+    # number of equivalent entries.
+    else:
+        seen = [] 
+        for i in range(n):
+            for j in range(n):
+                equiv_ent = find_all_equiv_moment_matrix_entries(mat[i,j], mat)
+
+                seen_all = True
+                for k in range(len(equiv_ent)):
+                    if equiv_ent[k] not in seen:
+                        seen_all = False
+                        break
+                    
+                if seen_all == False:
+                    equiv_dict[(i,j)] = equiv_ent
+                else:
+                    equiv_dict[(i,j)] = []
+                seen += equiv_ent
     
-    for i in range(n):
-        for j in range(n):
-            equiv_dict[(i,j)] = find_all_equiv_moment_matrix_entries(mat[i,j], mat)   
     return equiv_dict
 
 
