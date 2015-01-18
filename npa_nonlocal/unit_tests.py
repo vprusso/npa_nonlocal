@@ -27,6 +27,7 @@ from bell_violation import *
 
 class TestMomentMatrixFunctions(unittest.TestCase):
     '''
+    Suite of tests for moment_matrix.py
     '''
     def setUp(self):
         

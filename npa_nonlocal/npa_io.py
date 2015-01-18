@@ -16,7 +16,10 @@
 #------------------------------------------------------------------------------
 '''
 
+import re
+import sys
 import math
+import subprocess
 
 from sympy import *
 from sympy import pprint
@@ -196,6 +199,13 @@ def generate_latex_matrix(mat, block_mat_format=False):
     tex_src += "\\end{document}"
     
     return tex_src
+   
+   
+def compile_latex_file(latex_file_name):
+    '''
+    Compiles LaTeX file and generates the PDF result to user. 
+    '''
+    subprocess.call('pdflatex '+ latex_file_name, shell=True)
     
     
 ###############################################################################
@@ -217,7 +227,7 @@ def output_matlab_script(mat, bell_exp):
     script that uses CVX to solve the SDP. The script 
     '''
 
-    matlab_bell_exp = convert_python_matrix_to_matlab(bell_exp)    
+    #matlab_bell_exp = convert_python_matrix_to_matlab(bell_exp)    
     
     output = """
     cvx_begin sdp
@@ -229,6 +239,28 @@ def output_matlab_script(mat, bell_exp):
     \t \t    % entry M(1,1) = <psi| I I |psi> = 1
     \t \t    M(1,1) == 1;
     """
+    eq_dict = generate_moment_matrix_equivalence_dict(mat,True)
+    dim = int(math.sqrt(len(mat))) 
+    
+    for i in range(n):
+        for j in range(n):
+            # As long as the entry has more than one equality, loop through
+            # every other equivalent entry.
+            if len(eq_dict[i,j]) > 1:
+                # Set every element in the equivalent dictionary equal 
+                for k in range(len(eq_dict[i,j])):
+                    for l in range(len(eq_dict[i,j])):
+                        if k != l:
+                            # MATLAB indexes matrices starting at "1" instead
+                            # of 0, so make all entries +1:
+                            # TODO
+                            # import operator
+                            # tuple(map(operator.add, a, b))
+                            
+                            # store output moment matrix equality constraints
+                            print "M" + str(eq_dict[i,j][k]) + " == " + \
+                                  "M" + str(eq_dict[i,j][l])
+   
     
     
 #ops = generate_measurement_operators(2,2)

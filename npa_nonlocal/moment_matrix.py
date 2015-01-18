@@ -51,7 +51,7 @@ def generate_moment_matrix(seq, simplified=True):
 
 
 def generate_measurement_operators(num_inputs, num_outputs, \
-                                   short_meas=True, parallel_reps=1):
+                                   short_meas=False, parallel_reps=1):
     '''
     Measurement operators for Alice and Bob.
 
