@@ -37,7 +37,7 @@ def generate_moment_matrix(seq):
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
+            simp_seq = simplify_moment_matrix_entry( Dagger(seq[i]) * seq[j] )                 
             M[i,j] = simp_seq
             #M[i,j] = Dagger(seq[i]) * seq[j]
     return M
@@ -226,7 +226,7 @@ def generate_moment_matrix_equivalence_table(mat):
         
 
 
-def simplify_matrix_entry(entry):
+def simplify_moment_matrix_entry(entry):
     '''
     Since the measurement operators pair-wise commute, i.e. [A_a^x, B_b^y] = 0, 
     and since they are also projection operators, i.e. P^2 = P, we can possibly
