@@ -25,8 +25,9 @@ import subprocess
 from sympy import *
 from sympy import pprint
 
-from moment_matrix import *
 from util import *
+from moment_matrix import *
+from bell_violation import *
 
 
 ###############################################################################
@@ -43,8 +44,9 @@ def disp_main_menu():
 
     strs = ('Enter 1: Print moment matrix to console. \n'
     'Enter 2: Generate LaTeX file of moment matrix. \n'
-    'Enter 3: Generate MATLAB script. \n'
-    'Enter 4: to exit : ')
+    'Enter 3: Generate matrix from Bell expression. \n'
+    'Enter 4: Generate MATLAB script. \n'
+    'Enter 5: to exit : ')
     choice = raw_input(strs)
     
     return int(choice) 
@@ -87,9 +89,14 @@ def disp_prompt():
             
             # Open the PDF generated
             #subprocess.Popen(os.getcwd()+"/"+latex_file_name+".pdf",shell=True)
+
+        # Generate Bell matrix constraint matrix.
+        elif choice == 5:
+            print "Generating Bell expression matrix..."
+            
          
         # Generate / produce MATLAB script.
-        elif choice == 3:
+        elif choice == 4:
             print "Creating MATLAB script... (Depending on the matrix size, this can take a while...)"
             matlab_script_src = generate_matlab_script(M)
             matlab_file_name = raw_input("Enter file name for MATLAB script: ")
@@ -97,7 +104,7 @@ def disp_prompt():
             print matlab_file_name + ".m"  + " written to " + os.getcwd()
             
         # Exit / Quit
-        elif choice == 4:
+        elif choice == 5:
             break    
     
 ###############################################################################
@@ -118,7 +125,9 @@ def write_file(file_name, file_ext, content):
 ###############################################################################
 #   LaTeX functions
 ###############################################################################
-def generate_latex_matrix(mat, block_mat_format=False):
+def generate_latex_matrix(mat, \
+                          block_mat_format=False, \
+                          include_bras_kets=False):
     '''
     Generate source for a .tex file to output very large matrices. The variable
     block_mat_format allows the user to specify if they wish to output the 
@@ -197,8 +206,11 @@ def generate_latex_matrix(mat, block_mat_format=False):
                     s[k] = s[k] + "} "
             entry = list_2_str(s)
             
-            #output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
-            output += entry + delim
+            if include_bras_kets == True:
+                output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
+            else:
+                output += entry + delim
+                
     output += end_mat_tag
 
     tex_src += output + "\n"     
@@ -218,7 +230,6 @@ def compile_latex_file(latex_file_name):
     os.unlink(latex_file_name+".aux")
 
     
-    
 ###############################################################################
 #   MATLAB functions
 ###############################################################################
@@ -227,9 +238,16 @@ def convert_python_matrix_to_matlab(mat):
     '''
     Takes a python matrix and converts it one that can be used in MATLAB.
     '''
-    pass
+    dim = int(math.sqrt(len(mat))) 
+    matlab_mat = "[ "
+    for i in range(dim):
+        if i > 0:
+            matlab_mat += "; \n"
+        for j in range(dim):
+            matlab_mat += str(mat[i,j]) + " "
+    matlab_mat += "];"
     
-#    return matlab_mat 
+    return matlab_mat
 
 
 def generate_matlab_script(mat, bell_exp="TODO"):
@@ -238,7 +256,8 @@ def generate_matlab_script(mat, bell_exp="TODO"):
     script that uses CVX to solve the SDP. The script 
     '''
 
-    #matlab_bell_exp = convert_python_matrix_to_matlab(bell_exp)    
+    #matlab_bell_exp = convert_python_matrix_to_matlab(bell_exp)  
+    # TODO Put in Bell expression as well  
     
     output = """
     cvx_begin sdp
@@ -253,8 +272,8 @@ def generate_matlab_script(mat, bell_exp="TODO"):
     eq_dict = generate_moment_matrix_equivalence_dict(mat,True)
     dim = int(math.sqrt(len(mat))) 
     
-    for i in range(n):
-        for j in range(n):
+    for i in range(dim):
+        for j in range(dim):
             # As long as the entry has more than one equality, loop through
             # every other equivalent entry.
             if len(eq_dict[i,j]) > 1:

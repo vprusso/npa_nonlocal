@@ -251,10 +251,12 @@ def generate_moment_matrix_equivalence_dict(mat, minimal=False):
     # number of equivalent entries.
     else:
         seen = [] 
-        for i in range(n):
+        for i in range(n): 
             for j in range(n):
-                equiv_ent = find_all_equiv_moment_matrix_entries(mat[i,j], mat)
+                equiv_ent = find_all_equiv_moment_matrix_entries(mat[i,j], mat)                      
+
                 print i,j
+                
                 seen_all = True
                 for k in range(len(equiv_ent)):
                     if equiv_ent[k] not in seen:
