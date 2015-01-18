@@ -37,9 +37,9 @@ def generate_moment_matrix(seq):
     M = zeros(n,n)
     for i in range(n):
         for j in range(n):            
-            #simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
-            #M[i,j] = simp_seq
-            M[i,j] = Dagger(seq[i]) * seq[j]
+            simp_seq = simplify_matrix_entry( Dagger(seq[i]) * seq[j] )                 
+            M[i,j] = simp_seq
+            #M[i,j] = Dagger(seq[i]) * seq[j]
     return M
 
 
@@ -163,35 +163,60 @@ def generate_sequence(meas_ops, level):
                     seq.append( seq[j] * seq[k+(n/2)] )
 
     # Add in Identity operator to the front of the sequence
-    #I = IdentityOperator()
-    I = HermitianOperator("I")
+    I = IdentityOperator()
+    #I = HermitianOperator("I")
     seq[0:0] = [I]
     
     return seq
     
+
+def find_all_equiv_moment_matrix_entries(entry, mat):
+    '''
+    Given an entry in the moment matrix, this function finds all other entries
+    that are equal to the entry in question. The indices are returned as a
+    list of tuples.
+    '''
+    n = int(math.sqrt(len(mat))) 
     
+    equiv_indices = []
+    for i in range(n):
+        for j in range(n):
+            if check_moment_matrix_entry_equiv(entry, mat[i,j]):
+                equiv_indices.append( (i,j) )
+    return equiv_indices
+    
+   
 def check_moment_matrix_entry_equiv(entry_1, entry_2):
     '''
     Given two entries in the moment matrix, this function checks whether or not
     they are within the same equivalence class by performing various checks 
     based on the properties of the projective measurement operators. 
     '''
-
-    # Check if entry_1 and entry_2 are equivalent via commutation relations    
     
-    # First just check if the entries are mirrored:
-    if str(entry_1) == str(entry_2):
-        return True
-    elif:
-        pass
+    # First ensure the length of the entry is the same.
+    if len(str(entry_1)) == len(str(entry_2)):
+        
+        flip_entry_1 = entry_1.args[::-1]
+        flip_entry_2 = entry_2.args[::-1]
+        
+        # If entries are identical strings:
+        if str(entry_1) == str(entry_2):
+            return True
+        # If entries are mirrored strings:
+        elif ( str(entry_1) == str(flip_entry_2) ) or \
+             ( str(entry_2) == str(flip_entry_1) ):
+            return True
+            
+    # Otherwise, the entries are not equal 
     else:
         return False
 
 
-def generate_equivalence_table(mat):
+def generate_moment_matrix_equivalence_table(mat):
     '''
     Given a moment matrix, this function returns a table of all respective
-    equivalent entries in the matrix.
+    equivalent entries in the matrix. Note, depending on the size of the 
+    moment matrix, this may take a while. 
     '''
     n = int(math.sqrt(len(mat))) 
     
@@ -211,7 +236,6 @@ def simplify_matrix_entry(entry):
     if isinstance(entry, IdentityOperator):
         pass
     else:
-                            
         # Measurement operators satisfy [A_a^x, B_b^y] = 0 for all operators 
         # A_a^x and B_b^y
         args = list(entry.args)
