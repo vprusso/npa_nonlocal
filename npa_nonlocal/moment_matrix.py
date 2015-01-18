@@ -212,9 +212,9 @@ def check_moment_matrix_entry_equiv(entry_1, entry_2):
         return False
 
 
-def generate_moment_matrix_equivalence_table(mat):
+def generate_moment_matrix_equivalence_dict(mat):
     '''
-    Given a moment matrix, this function returns a table of all respective
+    Given a moment matrix, this function returns a dictionary of all respective
     equivalent entries in the matrix. Note, depending on the size of the 
     moment matrix, this may take a while. 
     '''
@@ -222,8 +222,12 @@ def generate_moment_matrix_equivalence_table(mat):
     
     # Go through each entry in the moment matrix and compare against every
     # other entry. Store the result in a dictionary. 
-    # TODO
-        
+    equiv_dict = {}
+    
+    for i in range(n):
+        for j in range(n):
+            equiv_dict[(i,j)] = find_all_equiv_moment_matrix_entries(mat[i,j], mat)   
+    return equiv_dict
 
 
 def simplify_moment_matrix_entry(entry):

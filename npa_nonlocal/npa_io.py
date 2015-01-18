@@ -29,6 +29,7 @@ from util import *
 ###############################################################################
 def disp_prompt():
     '''
+    Displays the main prompt / option list to the user. 
     '''
     # TODO:
     #   Enter numeber of inputs / outputs 
@@ -36,6 +37,7 @@ def disp_prompt():
     #       Output moment matrix
     #       Run SDP
     pass
+
 
 ###############################################################################
 #   File I/O functions
@@ -50,6 +52,7 @@ def write_file(file_name, file_ext, content):
     with open(file_name+file_ext, 'w') as out_file:
         out_file.write(content)
     print ("Done.")
+
 
 ###############################################################################
 #   LaTeX functions
@@ -142,7 +145,40 @@ def generate_latex_matrix(mat, block_mat_format=False):
     
     return tex_src
     
+    
+###############################################################################
+#   MATLAB functions
+###############################################################################
 
+def convert_python_matrix_to_matlab(mat):
+    '''
+    Takes a python matrix and converts it one that can be used in MATLAB.
+    '''
+    pass
+    
+#    return matlab_mat 
+
+
+def output_matlab_script(mat, bell_exp):
+    '''
+    Given a moment matrix and Bell expression, this function writes a MATLAB
+    script that uses CVX to solve the SDP. The script 
+    '''
+
+    matlab_bell_exp = convert_python_matrix_to_matlab(bell_exp)    
+    
+    output = """
+    cvx_begin sdp
+    \t %#ok<*VUNUS>    % suppress MATLAB warnings for equality checks in CVX
+    \t %#ok<*EQEFF>    % suppress MATLAB warnings for inequality checks in CVX 
+    \t variable M(dim,dim) semidefinite symmetric
+    \t maximize trace(B * M)      
+    \t subject to 
+    \t \t    % entry M(1,1) = <psi| I I |psi> = 1
+    \t \t    M(1,1) == 1;
+    """
+    
+    
 #ops = generate_measurement_operators(2,2)
 #print ops
 
