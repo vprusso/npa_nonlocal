@@ -21,24 +21,76 @@ import math
 from sympy import *
 from sympy import pprint
 
+from moment_matrix import *
 from util import *
 
 
 ###############################################################################
 #   Prompt functions
 ###############################################################################
+
+def disp_main_menu():
+    '''
+    Displays the main menu at prompt
+    '''
+    print (30 * '-')
+    print ("   M A I N - M E N U")
+    print (30 * '-')
+
+    strs = ('Enter 1: Print moment matrix to console. \n'
+    'Enter 2: \n'
+    'Enter 3: Generate LaTeX file of moment matrix. \n'
+    'Enter 4: Generate MATLAB script. \n'
+    'Enter 5: to exit : ')
+    choice = raw_input(strs)
+    
+    return int(choice) 
+
+
 def disp_prompt():
     '''
     Displays the main prompt / option list to the user. 
     '''
-    # TODO:
-    #   Enter numeber of inputs / outputs 
-    #   Option to:
-    #       Output moment matrix
-    #       Run SDP
-    pass
 
+    print (30 * '-')
+    print ("   NPANONLOCAL ")
+    print (30 * '-')
 
+    num_inputs = raw_input('Enter number of inputs: ')
+    num_outputs = raw_input('Enter number of outputs: ')
+    level = raw_input('Enter NPA hierarchy level: ')    
+
+    ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
+    seq = generate_sequence(ops, level)
+    M = generate_moment_matrix(seq)
+    n = len(seq)        
+    
+    while True:         
+        choice = disp_main_menu()
+    
+        # pretty print matrix        
+        if choice == 1:
+            pprint(M)
+            print "Matrix printed!"
+            
+        #
+        elif choice == 2:
+            pass
+         
+        #
+        elif choice == 3:
+            content = generate_latex_matrix(M)
+            latex_file_name = raw_input("Enter file name for LaTeX file:")
+            write_file(latex_file_name, ".tex", content)
+         
+        #
+        elif choice == 4:
+            pass
+            
+        # Exit / Quit
+        elif choice == 5:
+            break    
+    
 ###############################################################################
 #   File I/O functions
 ###############################################################################

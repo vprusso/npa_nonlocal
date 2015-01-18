@@ -199,6 +199,12 @@ def check_moment_matrix_entry_equiv(entry_1, entry_2):
         flip_entry_1 = entry_1.args[::-1]
         flip_entry_2 = entry_2.args[::-1]
         
+        # If the flipped term is just one entry, don't multiply through tuple.
+        if len(flip_entry_1) > 1:
+            flip_entry_1 = reduce(lambda x,y : x*y, flip_entry_1)
+        if len(flip_entry_2) > 1:
+            flip_entry_2 = reduce(lambda x,y : x*y, flip_entry_2)
+        
         # If entries are identical strings:
         if str(entry_1) == str(entry_2):
             return True
