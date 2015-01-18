@@ -17,6 +17,7 @@
 '''
 
 import re
+import os
 import sys
 import math
 import subprocess
@@ -41,10 +42,9 @@ def disp_main_menu():
     print (30 * '-')
 
     strs = ('Enter 1: Print moment matrix to console. \n'
-    'Enter 2: \n'
-    'Enter 3: Generate LaTeX file of moment matrix. \n'
-    'Enter 4: Generate MATLAB script. \n'
-    'Enter 5: to exit : ')
+    'Enter 2: Generate LaTeX file of moment matrix. \n'
+    'Enter 3: Generate MATLAB script. \n'
+    'Enter 4: to exit : ')
     choice = raw_input(strs)
     
     return int(choice) 
@@ -71,27 +71,33 @@ def disp_prompt():
     while True:         
         choice = disp_main_menu()
     
-        # pretty print matrix        
+        # Pretty print matrix to console window.
         if choice == 1:
             pprint(M)
             print "Matrix printed!"
-            
-        #
+                     
+        # Generate / produce LaTeX script.
         elif choice == 2:
-            pass
+            print "Generating LaTeX file..."
+            latex_src = generate_latex_matrix(M)
+            latex_file_name = raw_input("Enter file name for LaTeX file: ")
+            write_file(latex_file_name, ".tex", latex_src)
+            compile_latex_file(latex_file_name)
+            print latex_file_name + ".tex" + " written to " + os.getcwd()
+            
+            # Open the PDF generated
+            #subprocess.Popen(os.getcwd()+"/"+latex_file_name+".pdf",shell=True)
          
-        #
+        # Generate / produce MATLAB script.
         elif choice == 3:
-            content = generate_latex_matrix(M)
-            latex_file_name = raw_input("Enter file name for LaTeX file:")
-            write_file(latex_file_name, ".tex", content)
-         
-        #
-        elif choice == 4:
-            pass
+            print "Creating MATLAB script... (Depending on the matrix size, this can take a while...)"
+            matlab_script_src = generate_matlab_script(M)
+            matlab_file_name = raw_input("Enter file name for MATLAB script: ")
+            write_file(matlab_file_name, ".m", matlab_script_src)
+            print matlab_file_name + ".m"  + " written to " + os.getcwd()
             
         # Exit / Quit
-        elif choice == 5:
+        elif choice == 4:
             break    
     
 ###############################################################################
@@ -207,6 +213,11 @@ def compile_latex_file(latex_file_name):
     '''
     subprocess.call('pdflatex '+ latex_file_name, shell=True)
     
+    # Remove .log and .aux files after generating PDF
+    os.unlink(latex_file_name+".log")
+    os.unlink(latex_file_name+".aux")
+
+    
     
 ###############################################################################
 #   MATLAB functions
@@ -221,7 +232,7 @@ def convert_python_matrix_to_matlab(mat):
 #    return matlab_mat 
 
 
-def output_matlab_script(mat, bell_exp):
+def generate_matlab_script(mat, bell_exp="TODO"):
     '''
     Given a moment matrix and Bell expression, this function writes a MATLAB
     script that uses CVX to solve the SDP. The script 
@@ -253,21 +264,11 @@ def output_matlab_script(mat, bell_exp):
                         if k != l:
                             # MATLAB indexes matrices starting at "1" instead
                             # of 0, so make all entries +1:
-                            # TODO
-                            # import operator
-                            # tuple(map(operator.add, a, b))
+                            a = tuple([x+1 for x in eq_dict[i,j][k]])
+                            b = tuple([x+1 for x in eq_dict[i,j][l]])                        
                             
-                            # store output moment matrix equality constraints
-                            print "M" + str(eq_dict[i,j][k]) + " == " + \
-                                  "M" + str(eq_dict[i,j][l])
-   
+                            output += "M" + str(a) + " == " + \
+                                      "M" + str(b) + "; \n"   
+    output += "\n cvx_end \n"
     
-    
-#ops = generate_measurement_operators(2,2)
-#print ops
-
-#seq = generate_sequence(ops, "1+AB")
-#print seq
-#mat = generate_moment_matrix(seq)
-#print generate_latex_matrix(mat)
-
+    return output 

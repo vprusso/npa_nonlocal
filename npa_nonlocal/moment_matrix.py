@@ -182,6 +182,10 @@ def find_all_equiv_moment_matrix_entries(entry, mat):
     Given an entry in the moment matrix, this function finds all other entries
     that are equal to the entry in question. The indices are returned as a
     list of tuples.
+    
+    Note: This function is very computationally intensive for even small matrix
+    sizes.
+        TODO: Optimize function
     '''
     n = int(math.sqrt(len(mat))) 
     
@@ -250,7 +254,7 @@ def generate_moment_matrix_equivalence_dict(mat, minimal=False):
         for i in range(n):
             for j in range(n):
                 equiv_ent = find_all_equiv_moment_matrix_entries(mat[i,j], mat)
-
+                print i,j
                 seen_all = True
                 for k in range(len(equiv_ent)):
                     if equiv_ent[k] not in seen:
