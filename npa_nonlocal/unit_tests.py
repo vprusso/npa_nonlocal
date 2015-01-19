@@ -17,8 +17,11 @@
 '''
 
 import unittest
+
+
 from moment_matrix import *
 from bell_violation import *
+from util import *
 
 
 ###############################################################################

@@ -25,9 +25,9 @@ import subprocess
 from sympy import *
 from sympy import pprint
 
-from util import *
-from moment_matrix import *
-from bell_violation import *
+from npa_nonlocal import util
+from npa_nonlocal import moment_matrix
+from npa_nonlocal import bell_violation
 
 
 ###############################################################################

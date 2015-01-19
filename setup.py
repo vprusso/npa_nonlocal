@@ -12,11 +12,11 @@ References: [1] Navascues, M. and Pironio, S. and A. Acin. A convergent
 from distutils.core import setup
 
 setup(
-    name='npanonlocal',
+    name='npa_nonlocal',
     version='1.0',
     author='Vincent Russo',
     author_email='vincentrusso1@gmail.com',
-    packages=['npanonlocal'],
+    packages=['npa_nonlocal'],
     url='http://vprusso.github.io/',
     keywords=[
         'sdp',
@@ -28,8 +28,7 @@ setup(
         'sdpa'],
     license='LICENSE',
     description='A suite of functions useful for calculating the moment matrix\
-                 and Bell violation matrices covered in the NPA paper.'
-    long_description=open('README.rst').read(),
+                 and Bell violation matrices covered in the NPA paper.',
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: OS Independent',

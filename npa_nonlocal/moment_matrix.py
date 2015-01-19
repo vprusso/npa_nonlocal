@@ -25,7 +25,6 @@ from sympy.matrices import zeros
 from npa_io import *
 from util import *
 
-
 def generate_moment_matrix(seq, simplified=True):
     '''
     Given a sequence of level l (denoted S^l), the n x n moment matrix 
