@@ -16,13 +16,19 @@ import itertools
 
 def generate_bit_strings(n):
     '''
-    Generates all bit strings of length n
+    Generates all bit strings of length n.
     '''
     return ["".join(seq) for seq in itertools.product("01", repeat=n)]
     
     
 def list_2_str(_list):
     '''
-    Converts a list of objects into a concatenation of strings
+    Converts a list of objects into a concatenation of strings.
     '''
     return ' '.join(map(str, _list))
+    
+def check_equal(iterator):
+    '''
+    Checks if elements in an iterable object are all equal to each other.
+    '''
+    return len(set(iterator)) <= 1

@@ -18,7 +18,6 @@
 
 import unittest
 
-
 from moment_matrix import *
 from bell_violation import *
 from util import *
@@ -58,15 +57,15 @@ class TestMomentMatrixFunctions(unittest.TestCase):
         self.seq_len_input_3_output_2_level_1_A_AB = 22
         
         # Generate measurement operators of specified input / output length
-        self.meas_ops_input_2_output_2 = generate_measurement_operators(2,2)
-        self.meas_ops_input_3_output_3 = generate_measurement_operators(3,3)
-        self.meas_ops_input_4_output_4 = generate_measurement_operators(4,4)
-        self.meas_ops_input_5_output_5 = generate_measurement_operators(5,5)
-        self.meas_ops_input_6_output_6 = generate_measurement_operators(6,6)
-        self.meas_ops_input_7_output_7 = generate_measurement_operators(7,7)
-        self.meas_ops_input_8_output_8 = generate_measurement_operators(8,8)
+        self.meas_ops_input_2_output_2 = generate_measurement_operators(2,2,True)
+        self.meas_ops_input_3_output_3 = generate_measurement_operators(3,3,True)
+        self.meas_ops_input_4_output_4 = generate_measurement_operators(4,4,True)
+        self.meas_ops_input_5_output_5 = generate_measurement_operators(5,5,True)
+        self.meas_ops_input_6_output_6 = generate_measurement_operators(6,6,True)
+        self.meas_ops_input_7_output_7 = generate_measurement_operators(7,7,True)
+        self.meas_ops_input_8_output_8 = generate_measurement_operators(8,8,True)
         
-        self.meas_ops_input_3_output_2 = generate_measurement_operators(3,2)
+        self.meas_ops_input_3_output_2 = generate_measurement_operators(3,2,True)
     
         # Check that despite level input, permutations of order do not matter.
         self.level_1 = 1

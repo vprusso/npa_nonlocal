@@ -25,9 +25,9 @@ import subprocess
 from sympy import *
 from sympy import pprint
 
-from npa_nonlocal import util
-from npa_nonlocal import moment_matrix
-from npa_nonlocal import bell_violation
+from util import *
+from moment_matrix import *
+#from bell_violation import *
 
 
 ###############################################################################
@@ -91,7 +91,7 @@ def disp_prompt():
             #subprocess.Popen(os.getcwd()+"/"+latex_file_name+".pdf",shell=True)
 
         # Generate Bell matrix constraint matrix.
-        elif choice == 5:
+        elif choice == 3:
             print "Generating Bell expression matrix..."
             
          
@@ -272,6 +272,8 @@ def generate_matlab_script(mat, bell_exp="TODO"):
     eq_dict = generate_moment_matrix_equivalence_dict(mat,True)
     dim = int(math.sqrt(len(mat))) 
     
+    # These are the commutation and projection constraints on the moment
+    # matrix entries.
     for i in range(dim):
         for j in range(dim):
             # As long as the entry has more than one equality, loop through

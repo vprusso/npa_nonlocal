@@ -16,19 +16,20 @@
 #------------------------------------------------------------------------------
 '''
 
-from npa_io import *
-from moment_matrix import *
-
 from sympy import pprint
 
-def bell_operator_matrix(bell_exp, moment_matrix):
+from npa_io import *
+from moment_matrix import *
+from util import *
+
+def bell_operator_matrix(bell_exp, M):
     '''
-    Given a Bell expression (bell_expr) and a moment matrix, (moment_matrix) 
+    Given a Bell expression (bell_expr) and a moment matrix, (M) 
     this function returns a matrix where the entries corresponding to the Bell
     expression are weighted in the positions in the moment matrix.
     '''
     
-    n = int(math.sqrt(len(moment_matrix)))
+    n = int(math.sqrt(len(M)))
 
     bell_terms = []
     bell_coeffs = []
@@ -72,14 +73,24 @@ def bell_operator_matrix(bell_exp, moment_matrix):
     bell_mat = zeros(n,n)
     
     # find all entries in matrix that correspond to term
-    for i in range(len(chsh_terms)):
+    for i in range(len(bell_terms)):
         equiv_entries = find_all_equiv_moment_matrix_entries(bell_terms[i], M)
         # weight the term appropriately in new bell matrix
         for j in range(len(equiv_entries)):
+            # XXX NOTE: Not sure why this line is here. Needs to be here to work
+            # but why is it required to block out the diagonal entries??
+            #if not check_equal(equiv_entries[j]):
             bell_mat[ equiv_entries[j] ] = bell_coeffs[i]
 
     return bell_mat
 
+
+def parse_bell_exp():
+    '''
+    Function that parses through a bell expression string and converts it to
+    a sympy object. 
+    '''
+    pass
 
 #ops = generate_measurement_operators(2,2,False,1)
 #seq = generate_sequence(ops, "1")
@@ -90,7 +101,8 @@ def bell_operator_matrix(bell_exp, moment_matrix):
 #
 #n = len(seq)
 #
-#chsh_exp = A00*B00 + A11*B00 + A00*B11 - A11*B11 - A00 - B00
+##chsh_exp = A00*B00 + A11*B00 + A00*B11 - A11*B11 - A00 - B00
+#chsh_exp = A00*B00 + A10*B00 + A00*B10 - A10*B10 - A00 - B00 
 #
 ##bell_mat = bell_operator_matrix(chsh_exp, M)
 #
@@ -137,5 +149,17 @@ def bell_operator_matrix(bell_exp, moment_matrix):
 #    equiv_entries = find_all_equiv_moment_matrix_entries(chsh_terms[i], M)
 #    # weight the term appropriately in new bell matrix
 #    for j in range(len(equiv_entries)):
-#        bell_mat[ equiv_entries[j] ] = chsh_coeffs[i]
-#        
+#        if not check_equal(equiv_entries[j]):
+#            bell_mat[ equiv_entries[j] ] = chsh_coeffs[i]
+
+# 2,2
+# 6,6
+#0 -1 0 0 0 -1 0 0 0
+#-1 X 0 0 0 1 0 0 1
+#0 0 0 0 0 0 0 0 0
+#0 0 0 0 0 0 0 0 0        
+#0 0 0 0 0 1 0 0 -1
+#-1 1 0 0 1 X 0 0 0
+#0 0 0 0 0 0 0 0 0 
+#0 0 0 0 0 0 0 0 0
+#0 1 0 0 -1 0 0 0 0
