@@ -12,7 +12,9 @@
 #------------------------------------------------------------------------------
 '''
 
+import os
 import itertools
+
 
 def generate_bit_strings(n, basis):
     '''
@@ -33,13 +35,14 @@ def check_equal(iterator):
     '''
     return len(set(iterator)) <= 1
     
+    
 def clear():
     '''
     Clears the shell of the spyder application. Use either clear() or cls()
     '''
     os.system('cls')
     return None
-cls = clear
+
 
 def clear_all():
     '''

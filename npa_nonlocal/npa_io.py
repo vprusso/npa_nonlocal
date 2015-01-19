@@ -55,6 +55,7 @@ def disp_main_menu():
 
 def disp_prompt():
     '''
+    TODO FIX MENUS
     Displays the main prompt / option list to the user. 
     '''
 
@@ -68,9 +69,14 @@ def disp_prompt():
 
     ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
     seq = generate_sequence(ops, level)
-    M = generate_moment_matrix(seq)
-    n = len(seq)        
-    
+
+    is_simp = raw_input('Simplify matrix using properties of measurements? y/n')
+        
+    if is_simp == 'y':
+        M = generate_moment_matrix(seq)
+    if is_simp == 'n':
+        M = generate_moment_matrix(seq,False)
+            
     while True:         
         choice = disp_main_menu()
     
@@ -114,6 +120,13 @@ def disp_prompt():
             seq = generate_sequence(ops, level)
             M = generate_moment_matrix(seq)         
             
+            is_simp = raw_input('Simplify matrix using properties of measurements? y/n')
+        
+            if is_simp == 'y':
+                M = generate_moment_matrix(seq)
+            if is_simp == 'n':
+                M = generate_moment_matrix(seq,False)
+                
         # Exit / Quit
         elif choice == 6:
             break    
@@ -138,6 +151,7 @@ def write_file(file_name, file_ext, content):
 ###############################################################################
 def generate_latex_matrix(mat, \
                           block_mat_format=False, \
+                          ref_mat=False, \
                           include_bras_kets=False):
     '''
     Generate source for a .tex file to output very large matrices. The variable
@@ -145,6 +159,7 @@ def generate_latex_matrix(mat, \
     matrix in a block format in LaTeX.    
     '''
     
+    # LaTeX src header:
     tex_src = """
     \\documentclass[10pt]{article}
     \\usepackage[landscape,left=1cm,right=1cm,top=1cm,bottom=1cm,a3paper]{geometry}
@@ -187,8 +202,9 @@ def generate_latex_matrix(mat, \
 
     dim = int(math.sqrt(len(mat))) 
     if block_mat_format == True:
-        block_sz = str("c"*dim)    
-        start_mat_tag = "\\left(\\begin{array}{" + block_sz + "|" + block_sz + "} \n" 
+        block_sz = str("c"*floor(dim/2))    
+        start_mat_tag = "\\left(\\begin{array}{" + block_sz + \
+                        "|" + block_sz + "} \n" 
         end_mat_tag = "\n \\end{array} \\right) }"
 
     else:
@@ -200,22 +216,32 @@ def generate_latex_matrix(mat, \
     # Write the actual matrix in LaTeX format
     output = start_mat_tag
     for i in range(dim):
+        
         if i > 0:
             output += "\n"
-        for j in range(dim):
-            if block_mat_format == True and i == dim/2:
-                output += "\\hline \n"                
+        if block_mat_format == True and i == dim/2:
+            output += "\\hline \n" 
+            
+        for j in range(dim):        
+            
             if j == dim - 1:
                 delim = " \\\ "
             else:
                 delim = " & "
             entry = (str(mat[i,j]).replace("*"," ")).replace("I", " \\I ")
-            s = entry.split()
-            for k in range(len(s)):
-                if "^" in s[k]:
-                    s[k] = s[k].replace("^","^{").replace("_","}_{")
-                    s[k] = s[k] + "} "
-            entry = list_2_str(s)
+            
+            if ref_mat == False:
+                s = entry.split()
+                for k in range(len(s)):
+                    if "^" in s[k]:
+                        s[k] = s[k].replace("^","^{").replace("_","}_{")
+                        s[k] = s[k] + "} "
+                entry = list_2_str(s)
+            
+
+            else:
+                entry = entry.replace("x"," \otimes ")
+                
             
             if include_bras_kets == True:
                 output += "\\bra{\\psi}" + entry + "\\ket{\\psi}" + delim
