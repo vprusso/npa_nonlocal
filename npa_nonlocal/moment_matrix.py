@@ -64,15 +64,21 @@ def generate_measurement_operators(num_inputs, num_outputs, \
     meas_ops = []    
 
     # Assuming that measurement labels are {0,1}-valued.
-    meas_labels = generate_bit_strings(parallel_reps)    
-    num_meas = len(meas_labels)    
+    basis_in = list_2_str(range(num_inputs)).replace(" ", "")
+    basis_out = list_2_str(range(num_outputs)).replace(" ", "")
+    
+    meas_labels_in = generate_bit_strings(parallel_reps, basis_in)    
+    meas_labels_out = generate_bit_strings(parallel_reps, basis_out)
+    
+    num_meas_in = len(meas_labels_in)
+    num_meas_out = len(meas_labels_out)    
     
     # Longer form of measurements are generated.
     if short_meas == False:
-        for i in range(num_meas):
-            for j in range(num_meas):
-                alice_label = "A^" + meas_labels[i] + "_" + meas_labels[j]
-                bob_label = "B^" + meas_labels[i] + "_" + meas_labels[j]
+        for i in range(num_meas_in):
+            for j in range(num_meas_out):
+                alice_label = "A^" + meas_labels_in[i] + "_" + meas_labels_out[j]
+                bob_label = "B^" + meas_labels_in[i] + "_" + meas_labels_out[j]
 
                 alice_meas_op = HermitianOperator(alice_label)
                 alice_meas_op.is_commutative = False
@@ -83,7 +89,7 @@ def generate_measurement_operators(num_inputs, num_outputs, \
                 meas_ops.append(HermitianOperator(alice_meas_op))
                 meas_ops.append(HermitianOperator(bob_meas_op))
 
-    # Shorter form of measurements are generated
+    # Shorter form of measurements are generated FIX TODO
     if short_meas == True:
         for i in range(num_inputs-1 + num_outputs-1):
 
