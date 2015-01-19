@@ -25,9 +25,9 @@ import subprocess
 from sympy import *
 from sympy import pprint
 
-from util import *
 from moment_matrix import *
-#from bell_violation import *
+from bell_violation import *
+from util import *
 
 
 ###############################################################################
@@ -46,7 +46,8 @@ def disp_main_menu():
     'Enter 2: Generate LaTeX file of moment matrix. \n'
     'Enter 3: Generate matrix from Bell expression. \n'
     'Enter 4: Generate MATLAB script. \n'
-    'Enter 5: to exit : ')
+    'Enter 5: Enter another matrix.\n'
+    'Enter 6: to exit : ')
     choice = raw_input(strs)
     
     return int(choice) 
@@ -60,10 +61,10 @@ def disp_prompt():
     print (30 * '-')
     print ("   NPANONLOCAL ")
     print (30 * '-')
-
-    num_inputs = raw_input('Enter number of inputs: ')
-    num_outputs = raw_input('Enter number of outputs: ')
-    level = raw_input('Enter NPA hierarchy level: ')    
+    
+    num_inputs = int(raw_input('Enter number of inputs: '))
+    num_outputs = int(raw_input('Enter number of outputs: '))
+    level = int(raw_input('Enter NPA hierarchy level: '))
 
     ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
     seq = generate_sequence(ops, level)
@@ -102,9 +103,19 @@ def disp_prompt():
             matlab_file_name = raw_input("Enter file name for MATLAB script: ")
             write_file(matlab_file_name, ".m", matlab_script_src)
             print matlab_file_name + ".m"  + " written to " + os.getcwd()
+
+        # Display enter input / output options again.
+        elif choice == 5:   
+            num_inputs = int(raw_input('Enter number of inputs: '))
+            num_outputs = int(raw_input('Enter number of outputs: '))
+            level = int(raw_input('Enter NPA hierarchy level: '))
+
+            ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
+            seq = generate_sequence(ops, level)
+            M = generate_moment_matrix(seq)         
             
         # Exit / Quit
-        elif choice == 5:
+        elif choice == 6:
             break    
     
 ###############################################################################

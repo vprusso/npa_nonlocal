@@ -14,11 +14,11 @@
 
 import itertools
 
-def generate_bit_strings(n):
+def generate_bit_strings(n, basis):
     '''
     Generates all bit strings of length n.
     '''
-    return ["".join(seq) for seq in itertools.product("01", repeat=n)]
+    return ["".join(seq) for seq in itertools.product(basis, repeat=n)]
     
     
 def list_2_str(_list):
@@ -32,3 +32,24 @@ def check_equal(iterator):
     Checks if elements in an iterable object are all equal to each other.
     '''
     return len(set(iterator)) <= 1
+    
+def clear():
+    '''
+    Clears the shell of the spyder application. Use either clear() or cls()
+    '''
+    os.system('cls')
+    return None
+cls = clear
+
+def clear_all():
+    '''
+    Clears all the variables from the workspace of the spyder application,
+    '''
+    cls()
+    gl = globals().copy()
+    for var in gl:
+        if var[0] == '_': continue
+        if 'func' in str(globals()[var]): continue
+        if 'module' in str(globals()[var]): continue
+        
+        del globals()[var]

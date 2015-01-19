@@ -24,8 +24,7 @@ setup(
         'sdp hierarchy',
         'moment matrix',
         'NPA',
-        'noncommuting variable',
-        'sdpa'],
+        'noncommuting variable'],
     license='LICENSE',
     description='A suite of functions useful for calculating the moment matrix\
                  and Bell violation matrices covered in the NPA paper.',
