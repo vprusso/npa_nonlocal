@@ -17,13 +17,14 @@
 #------------------------------------------------------------------------------
 '''
 
+import math 
+
 from sympy import *
 from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
 from sympy.core.numbers import Infinity, Integer, NegativeOne
 from sympy.matrices import zeros
 
-from npa_io import *
-from util import *
+import util
 
 def generate_moment_matrix(seq, simplified=True):
     '''
@@ -64,11 +65,11 @@ def generate_measurement_operators(num_inputs, num_outputs, \
     meas_ops = []    
 
     # Assuming that measurement labels are {0,1}-valued.
-    basis_in = list_2_str(range(num_inputs)).replace(" ", "")
-    basis_out = list_2_str(range(num_outputs)).replace(" ", "")
+    basis_in = util.list_2_str(range(num_inputs)).replace(" ", "")
+    basis_out = util.list_2_str(range(num_outputs)).replace(" ", "")
     
-    meas_labels_in = generate_bit_strings(parallel_reps, basis_in)    
-    meas_labels_out = generate_bit_strings(parallel_reps, basis_out)
+    meas_labels_in = util.generate_bit_strings(parallel_reps, basis_in)    
+    meas_labels_out = util.generate_bit_strings(parallel_reps, basis_out)
     
     num_meas_in = len(meas_labels_in)
     num_meas_out = len(meas_labels_out)    

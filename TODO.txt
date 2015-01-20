@@ -1,0 +1,7 @@
+moment_matrix.py:
+	-Error checking for level input
+	-simplify_sequence function
+
+npa_io.py:
+	-Get rid of clunky braces in npa io and just put them in the var definition in moment_matrix.py (E_00 vs E_{00})
+	-Fix menu prompts for when asking for inputs / outputs for the second time

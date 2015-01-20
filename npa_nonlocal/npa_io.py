@@ -22,12 +22,12 @@ import sys
 import math
 import subprocess
 
-from sympy import *
+from sympy import MutableDenseMatrix
 from sympy import pprint
 
-from moment_matrix import *
-from bell_violation import *
-from util import *
+import util
+import moment_matrix
+import bell_violation
 
 
 ###############################################################################
@@ -65,17 +65,18 @@ def disp_prompt():
     
     num_inputs = int(raw_input('Enter number of inputs: '))
     num_outputs = int(raw_input('Enter number of outputs: '))
-    level = int(raw_input('Enter NPA hierarchy level: '))
+    level = str(raw_input('Enter NPA hierarchy level: '))
+    num_reps = int(raw_input('Enter number of repetitions: '))
 
-    ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
-    seq = generate_sequence(ops, level)
+    ops = moment_matrix.generate_measurement_operators(num_inputs,num_outputs,False,num_reps)
+    seq = moment_matrix.generate_sequence(ops, level)
 
     is_simp = raw_input('Simplify matrix using properties of measurements? y/n')
         
     if is_simp == 'y':
-        M = generate_moment_matrix(seq)
+        M = moment_matrix.generate_moment_matrix(seq)
     if is_simp == 'n':
-        M = generate_moment_matrix(seq,False)
+        M = moment_matrix.generate_moment_matrix(seq,False)
             
     while True:         
         choice = disp_main_menu()
@@ -114,18 +115,18 @@ def disp_prompt():
         elif choice == 5:   
             num_inputs = int(raw_input('Enter number of inputs: '))
             num_outputs = int(raw_input('Enter number of outputs: '))
-            level = int(raw_input('Enter NPA hierarchy level: '))
-
-            ops = generate_measurement_operators(num_inputs,num_outputs,False,1)
-            seq = generate_sequence(ops, level)
-            M = generate_moment_matrix(seq)         
-            
-            is_simp = raw_input('Simplify matrix using properties of measurements? y/n')
+            level = str(raw_input('Enter NPA hierarchy level: '))
+            num_reps = int(raw_input('Enter number of repetitions: '))
         
+            ops = moment_matrix.generate_measurement_operators(num_inputs,num_outputs,False,num_reps)
+            seq = moment_matrix.generate_sequence(ops, level)
+        
+            is_simp = raw_input('Simplify matrix using properties of measurements? y/n')
+                
             if is_simp == 'y':
-                M = generate_moment_matrix(seq)
+                M = moment_matrix.generate_moment_matrix(seq)
             if is_simp == 'n':
-                M = generate_moment_matrix(seq,False)
+                M = moment_matrix.generate_moment_matrix(seq,False)
                 
         # Exit / Quit
         elif choice == 6:
@@ -236,7 +237,7 @@ def generate_latex_matrix(mat, \
                     if "^" in s[k]:
                         s[k] = s[k].replace("^","^{").replace("_","}_{")
                         s[k] = s[k] + "} "
-                entry = list_2_str(s)
+                entry = util.list_2_str(s)
             
 
             else:
@@ -306,7 +307,7 @@ def generate_matlab_script(mat, bell_exp="TODO"):
     \t \t    % entry M(1,1) = <psi| I I |psi> = 1
     \t \t    M(1,1) == 1;
     """
-    eq_dict = generate_moment_matrix_equivalence_dict(mat,True)
+    eq_dict = moment_matrix.generate_moment_matrix_equivalence_dict(mat,True)
     dim = int(math.sqrt(len(mat))) 
     
     # These are the commutation and projection constraints on the moment

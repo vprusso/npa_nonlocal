@@ -16,11 +16,10 @@
 #------------------------------------------------------------------------------
 '''
 
-from sympy import pprint
+import util
+import npa_io
+import moment_matrix
 
-from npa_io import *
-from moment_matrix import *
-from util import *
 
 def bell_operator_matrix(bell_exp, M):
     '''
@@ -74,7 +73,7 @@ def bell_operator_matrix(bell_exp, M):
     
     # find all entries in matrix that correspond to term
     for i in range(len(bell_terms)):
-        equiv_entries = find_all_equiv_moment_matrix_entries(bell_terms[i], M)
+        equiv_entries = moment_matrix.find_all_equiv_moment_matrix_entries(bell_terms[i], M)
         # weight the term appropriately in new bell matrix
         for j in range(len(equiv_entries)):
             # XXX NOTE: Not sure why this line is here. Needs to be here to work
