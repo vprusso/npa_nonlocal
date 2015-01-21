@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
 #------------------------------------------------------------------------------
-# Name:        chsh.py
-# Purpose:     This example computes the maximal violation of the CHSH 
+# Name:        I3322.py
+# Purpose:     This example computes the maximal violation of the I3322
 #              inequality via the NPA hierarchy method.  
 #
 # Author:      Vincent Russo (vrusso@cs.uwaterloo.ca)
@@ -21,30 +21,36 @@ import npa_io
 import moment_matrix
 import bell_violation
 
-# CHSH inequality has 2 inputs / 2 outputs
-num_inputs = 2
+
+# I3322 inequality has 3 inputs / 2 outputs
+num_inputs = 3
 num_outputs = 2
 npa_level = "1"
 
 # Generate measurement operators of specified number of inputs / outputs.
 meas_ops = moment_matrix.generate_measurement_operators(num_inputs, num_outputs)
 
-# Generate sequence of operators for specified level of hierarchy.
+## Generate sequence of operators for specified level of hierarchy.
 seq = moment_matrix.generate_sequence(meas_ops, npa_level)
 
-# Generate the corresponding moment matrix of sequence.
-M = moment_matrix.generate_moment_matrix(seq,False)
+## Generate the corresponding moment matrix of sequence.
+M = moment_matrix.generate_moment_matrix(seq)
 
-# CHSH operators { A_0^0, A_0^1, B_0^0, B_0^1 }
-A00 = meas_ops[0]; A11 = meas_ops[3];
-B00 = meas_ops[4]; B11 = meas_ops[7]
+# I3322 operators 
+A00 = meas_ops[0]; A01 = meas_ops[1]; A10 = meas_ops[2]; A11 = meas_ops[3]; 
+A20 = meas_ops[4]; A21 = meas_ops[5]; 
 
-# CHSH inequality:
-# A_1 B_1 + A_2 B_1 + A_1 B_2 - A_2 B_2 - A_1 - B_1
-chsh_exp = A00*B00 + A11*B00 + A00*B11 - A11*B11 - A00 - B00
+B00 = meas_ops[6]; B01 = meas_ops[7]; B10 = meas_ops[8]; B11 = meas_ops[9]; 
+B20 = meas_ops[10]; B21 = meas_ops[11]; 
+
+# I3322 inequality:
+# A_1 B_1 + A_2 B_1 + A_3 B_1 + A_1 B_2 + A_2 B_2 - A_3 B_2  + A_1 B_3 
+#- A_2 B_2 - A_1 - 2*B_1 - B_2
+I3322_exp = A00*B00 + A00*B10 + A00*B20 + A10*B00 + A10*B10 - A10*B20 + \
+A20*B00 - A20*B10 - A00 - 2*B00 - B10
 
 # Returns a matrix that is weighted from the coefficients of the Bell 
 # expression corresponding to the entries in the moment matrix.
-bell_mat = bell_violation.bell_operator_matrix(chsh_exp, M)
+bell_mat = bell_violation.bell_operator_matrix(I3322_exp, M)
 
 print npa_io.convert_python_matrix_to_matlab(bell_mat)

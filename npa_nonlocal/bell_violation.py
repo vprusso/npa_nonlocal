@@ -20,6 +20,11 @@ import util
 import npa_io
 import moment_matrix
 
+import math
+
+from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
+from sympy.core.numbers import Infinity, Integer, NegativeOne
+from sympy.matrices import zeros
 
 def bell_operator_matrix(bell_exp, M):
     '''
