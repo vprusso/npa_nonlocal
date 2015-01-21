@@ -26,6 +26,14 @@ from sympy.matrices import zeros
 
 import util
 
+# Check for installation of PyCuda to make use of parallel functions
+IS_PYCUDA_INSTALLED = False
+try:
+    __import__('imp').find_module('pycuda')
+    IS_PYCUDA_INSTALLED = True
+except ImportError:
+    pass
+
 def generate_moment_matrix(seq, simplified=True):
     '''
     Given a sequence of level l (denoted S^l), the n x n moment matrix 
