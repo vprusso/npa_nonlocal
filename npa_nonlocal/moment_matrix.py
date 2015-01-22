@@ -276,7 +276,8 @@ class MomentMatrix(object):
             flip_entry_1 = entry_1.args[::-1]
             flip_entry_2 = entry_2.args[::-1]
             
-            # If the flipped term is just one entry, don't multiply through tuple.
+            # If the flipped term is just one entry, don't multiply through 
+            # the tuple.
             if len(flip_entry_1) > 1:
                 flip_entry_1 = reduce(lambda x,y : x*y, flip_entry_1)
             if len(flip_entry_2) > 1:
@@ -317,10 +318,10 @@ class MomentMatrix(object):
         
     def generate_moment_matrix_equivalence_dict(self):
         '''
-        Given a moment matrix, this function returns a dictionary of all respective
-        equivalent entries in the matrix. If the "minimal" value is True, the 
-        function only stores entries in the dictionary that have not been seen
-        previously.
+        Given a moment matrix, this function returns a dictionary of all 
+        respective equivalent entries in the matrix. If the "minimal" value is 
+        True, the function only stores entries in the dictionary that have not 
+        been seen previously.
         '''
         n = self.dim
         equiv_dict = {}
@@ -334,8 +335,8 @@ class MomentMatrix(object):
                         find_all_equiv_moment_matrix_entries(\
                             self.npa_matrix[i,j], self.npa_matrix)   
                         
-        # Otherwise generate a minimal list of entries that have no repeats in the
-        # number of equivalent entries.
+        # Otherwise generate a minimal list of entries that have no repeats in 
+        # the number of equivalent entries.
         else:
             seen = [] 
             for i in range(n): 
