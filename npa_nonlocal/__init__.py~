@@ -1,9 +1,0 @@
-"""
-CHANGE THESE
-NPAN
-=====
-Provides
- 1. A converter from a polynomial optimization problems of commuting and
-    noncommuting variables to a semidefinite programming relaxation.
- 2. Helper functions to define physics problems.
-"""
