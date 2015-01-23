@@ -26,6 +26,19 @@ from sympy.physics.quantum import Dagger, HermitianOperator, IdentityOperator
 from sympy.core.numbers import Infinity, Integer, NegativeOne
 from sympy.matrices import zeros
 
+class BellViolation(object):
+    
+    def __init__(self):
+        pass
+
+
+    def parse_bell_exp(self):
+        '''
+        Function that parses through a bell expression string and converts it to
+        a sympy object. 
+        '''
+        pass    
+
 def bell_operator_matrix(bell_exp, M):
     '''
     Given a Bell expression (bell_expr) and a moment matrix, (M) 
@@ -89,12 +102,7 @@ def bell_operator_matrix(bell_exp, M):
     return bell_mat
 
 
-def parse_bell_exp():
-    '''
-    Function that parses through a bell expression string and converts it to
-    a sympy object. 
-    '''
-    pass
+
 
 #ops = generate_measurement_operators(2,2,False,1)
 #seq = generate_sequence(ops, "1")
