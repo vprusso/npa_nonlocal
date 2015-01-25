@@ -38,6 +38,68 @@ class BellViolation(object):
         a sympy object. 
         '''
         pass    
+    def bell_operator_matrix(self, bell_exp, M):
+        '''
+        Given a Bell expression (bell_expr) and a moment matrix, (M) 
+        this function returns a matrix where the entries corresponding to the Bell
+        expression are weighted in the positions in the moment matrix.
+        '''
+        
+        n = int(math.sqrt(len(M)))
+    
+        bell_terms = []
+        bell_coeffs = []
+        bell_args = list(bell_exp.args)
+        for i in range(len(bell_args)):
+            
+            # Split Bell expression up into factors
+            factors = bell_args[i].as_ordered_factors()
+        
+            negate = False
+            terms = []
+            coeffs = []
+        
+            for j in range(len(factors)):
+                # Factors will have a NegativeOne instance if term is negative
+                if isinstance(factors[j], NegativeOne):
+                    negate = True        
+                # Any scalars are represented as Integers
+                elif isinstance(factors[j], Integer):
+                    if negate == True:
+                        coeffs.append(-factors[j])
+                    else:
+                        coeffs.append(factors[j])
+                # The remaining terms are Hermitian Operators (meas. ops.)
+                elif isinstance(factors[j], HermitianOperator):
+                    terms.append(factors[j])    
+            
+            # If a term doesn't have a scalar, we put a "1" to denote its scalar is
+            # just a factor of 1.
+            if len(coeffs) == 0:
+                coeffs.append(1)
+                if negate == True:
+                    coeffs[0] = -1
+                
+            terms = reduce(lambda x,y : x*y, terms)     
+            bell_terms.append(terms)
+            bell_coeffs.append(coeffs)
+        
+        # Go through matrix and properly weight entries with the coefficients
+        # derived from the Bell expression.
+        bell_mat = zeros(n,n)
+        
+        # find all entries in matrix that correspond to term
+        for i in range(len(bell_terms)):
+            equiv_entries = moment_matrix.find_all_equiv_moment_matrix_entries(bell_terms[i], M)
+            # weight the term appropriately in new bell matrix
+            for j in range(len(equiv_entries)):
+                # XXX NOTE: Not sure why this line is here. Needs to be here to work
+                # but why is it required to block out the diagonal entries??
+                #if not check_equal(equiv_entries[j]):
+                bell_mat[ equiv_entries[j] ] = bell_coeffs[i]
+    
+        return bell_mat
+    
 
 def bell_operator_matrix(bell_exp, M):
     '''
