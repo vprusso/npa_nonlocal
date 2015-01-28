@@ -21,6 +21,13 @@ def check_equal(iterator):
     '''Checks if elements in an iterable object are all equal to each other.'''
     return len(set(iterator)) <= 1
     
+
+def chunks(l, n):
+    '''Splits a list (l) into (n) separate chunks.'''
+    if n < 1:
+        n = 1
+    return [l[i:i + n] for i in range(0, len(l), n)]
+    
     
 def clear():
     '''Clears the shell of the spyder application. Use either clear() or cls()
